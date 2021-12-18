@@ -19,8 +19,8 @@ public class Game {
             @Override
             public void run() {
                 
-                IPlayer player1 = new HumanPlayer("Octopus");
-                IPlayer player2 = new tematé_otravé("Sintes");
+                IPlayer player1 = new RandomPlayer("Octopus");
+                IPlayer player2 = new temate_otrave("Sinteses");
                                 
                 new Board(player1 , player2, 4, Level.DIFFICULT);
              }

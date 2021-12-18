@@ -8,7 +8,7 @@ public class minimax_AlfaBeta {
     
     public static Entry<Point, Point> Tria_Moviment(ElMeuStatus estat, int profunditat) {
         int valor = Integer.MIN_VALUE;
-        Entry<Point, Point> millorMoviment = Map.entry(null,null);
+        Entry<Point, Point> millorMoviment = Map.entry(new Point(),new Point());
         
         int alfa = Integer.MIN_VALUE;
         int beta = Integer.MAX_VALUE;

@@ -22,7 +22,10 @@ public class Heuristica {
         int grup1_max = 0;
         int grup2_max = 0;
         visited = new boolean[s.getSize()][s.getSize()];
-        Arrays.fill(visited, false);
+
+        // Inicialitzar a valor false
+        for (boolean[] row: visited)
+            Arrays.fill(row, false);
         
         for (int i = 0; i < s.getSize(); i++) {
             for(int j= 0; j < s.getSize(); j++) {
