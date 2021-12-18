@@ -1,7 +1,5 @@
 package edu.upc.epsevg.prop.loa;
 
-import edu.upc.epsevg.prop.loa.Level;
-import edu.upc.epsevg.prop.loa.IPlayer;
 import edu.upc.epsevg.prop.loa.players.*;
 
 import javax.swing.SwingUtilities;
@@ -22,8 +20,7 @@ public class Game {
             public void run() {
                 
                 IPlayer player1 = new HumanPlayer("Octopus");
-                //IPlayer player1 = new RandomPlayer("Crazy Chris");
-                IPlayer player2 = new RandomPlayer("Crazy Ivan");
+                IPlayer player2 = new tematé_otravé("Sintes");
                                 
                 new Board(player1 , player2, 4, Level.DIFFICULT);
              }
