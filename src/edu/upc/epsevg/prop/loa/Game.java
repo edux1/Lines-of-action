@@ -19,10 +19,12 @@ public class Game {
             @Override
             public void run() {
                 
-                IPlayer player1 = new RandomPlayer("Octopus");
-                IPlayer player2 = new temate_otrave("Sinteses");
+//                IPlayer player1 = new RandomPlayer("Random alejandro");
+                IPlayer player1 = new BuckyPlayer(4);
+//                IPlayer player1 = new MCCloudPlayer();
+                IPlayer player2 = new temate_otrave("Sintes Jordi", 7);
                                 
-                new Board(player1 , player2, 4, Level.DIFFICULT);
+                new Board(player1 , player2, 10, Level.DIFFICULT);
              }
         });
     }
