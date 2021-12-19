@@ -52,6 +52,8 @@ public class minimax_AlfaBeta {
                 // Caso ganador
                 if(aux.isGameOver() && aux.GetWinner() == estat.getCurrentPlayer())
                     return Integer.MAX_VALUE;
+                else if (aux.isGameOver() && aux.GetWinner() == CellType.opposite(estat.getCurrentPlayer()))
+                    return Integer.MIN_VALUE;
                 
                 valor = Math.max(valor, minvalor(aux, profunditat - 1, alfa,beta));
                 
@@ -83,6 +85,8 @@ public class minimax_AlfaBeta {
                 // Caso ganador
                 if(aux.isGameOver() && aux.GetWinner() == estat.getCurrentPlayer())
                     return Integer.MIN_VALUE;
+                else if (aux.isGameOver() && aux.GetWinner() == CellType.opposite(estat.getCurrentPlayer()))
+                    return Integer.MAX_VALUE;
                     
                 valor = Math.min(valor, maxvalor(aux, profunditat - 1, alfa,beta));
                 

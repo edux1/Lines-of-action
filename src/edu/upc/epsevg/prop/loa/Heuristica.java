@@ -1,13 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package edu.upc.epsevg.prop.loa;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Vector;
 
 /**
  *
@@ -16,13 +10,14 @@ import java.util.Vector;
 public class Heuristica {
     
     public static int calcula(ElMeuStatus estat, CellType jugador) {
-        int score = heuristica_1(estat, jugador);
+        int score = heuristica_centre(estat, jugador) - heuristica_centre(estat, CellType.opposite(jugador));
+        System.out.println("Heuristica: " + score);
         return score;
     }
+
     
     public static int heuristica_1(ElMeuStatus s, CellType jugador) {
-        int grup1_max = 0;
-        int grup2_max = 0;
+        int grup_max = 0;
 
         ArrayList<Point> fitxes = new ArrayList<>();
         ArrayList<Boolean> visitades = new ArrayList<>();
@@ -33,17 +28,39 @@ public class Heuristica {
 
         for (int i = 0; i < fitxes.size(); i++) {
             if(!visitades.get(i)) {
-                busca_veines(i, fitxes, visitades);
+                grup_max = busca_veines(i, fitxes, visitades);
             }
 
-            if(grup1_max >= (fitxes.size() - i))
+            if(grup_max >= (fitxes.size() - i))
                 break;
 
             visitades.set(i,true);
         }
         
         // Retornem el valor de l'heuristica
-        return (grup1_max/s.getNumberOfPiecesPerColor(jugador)) - (grup2_max/s.getNumberOfPiecesPerColor(CellType.opposite(jugador)));
+        return (int) ( ( (float) grup_max / s.getNumberOfPiecesPerColor(jugador)) * 100);
+    }
+
+
+    public static int heuristica_centre(ElMeuStatus s, CellType jugador) {
+        int score = 0;
+        int[][] puntuacions = new int[][] {
+            {0,0,0,0,0,0,0,0},
+            {0,1,1,1,1,1,1,0},
+            {0,1,3,3,3,3,1,0},
+            {0,1,3,7,7,3,1,0},
+            {0,1,3,7,7,3,1,0},
+            {0,1,3,3,3,3,1,0},
+            {0,1,1,1,1,1,1,0},
+            {0,0,0,0,0,0,0,0}
+        };
+
+        for (int i = 0 ; i < s.getNumberOfPiecesPerColor(jugador) ; i++) {
+            Point p = s.getPiece(jugador, i);
+            score += puntuacions[p.x][p.y];
+        }
+
+        return score;
     }
     
     
@@ -52,7 +69,7 @@ public class Heuristica {
         int valor = 1;
 
         for (int i = posFitxa; i < fitxes.size() - 1; i++) {
-            if (esVeina(p,fitxes.get(i))) {
+            if ( (esVeina(p,fitxes.get(i))) && (fitxes.get(i) != p) && (!visitades.get(i)) ) {
                 visitades.set(i,true);
                 valor += busca_veines(posFitxa + 1, fitxes, visitades);
             }

@@ -1,9 +1,7 @@
 package edu.upc.epsevg.prop.loa.players;
 
 import edu.upc.epsevg.prop.loa.*;
-
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Map;
 
 public class temate_otrave implements IPlayer, IAuto {
@@ -16,12 +14,6 @@ public class temate_otrave implements IPlayer, IAuto {
         this.name = name;
         this.profunditat = profunditat;
     }
-
-    private boolean isInBounds(int x, int y) {
-        return (x >= 0 && x < s.getSize())
-                && (y >= 0 && y < s.getSize());
-    }
-
 
     @Override
     public Move move(GameStatus gameStatus) {
