@@ -4,68 +4,67 @@
  */
 package edu.upc.epsevg.prop.loa;
 
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Vector;
 
 /**
  *
  * @author edux
  */
 public class Heuristica {
-    //private boolean visited[][];
     
-    public static int calcula(ElMeuStatus estat, CellType jugador, boolean visited[][]) {
-        int score = heuristica_1(estat, jugador, visited);
+    public static int calcula(ElMeuStatus estat, CellType jugador) {
+        int score = heuristica_1(estat, jugador);
         return score;
     }
     
-    public static int heuristica_1(ElMeuStatus s, CellType jugador, boolean visited[][]) {
+    public static int heuristica_1(ElMeuStatus s, CellType jugador) {
         int grup1_max = 0;
         int grup2_max = 0;
-        visited = new boolean[s.getSize()][s.getSize()];
 
-        // Inicialitzar a valor false
-        for (boolean[] row: visited)
-            Arrays.fill(row, false);
-        
-        for (int i = 0; i < s.getSize(); i++) {
-            for(int j= 0; j < s.getSize(); j++) {
-                
-                if(s.getPos(i, j) != CellType.EMPTY && !visited[i][j]) {
-                    //Creo que se puede optimizar la segunda condición del if
-                    if(s.getPos(i, j) == jugador && grup1_max < s.getNumberOfPiecesPerColor(jugador)/2)
-                        grup1_max = Math.max(busca_veines(i, j, s.getPos(i,j), s, visited), grup1_max);
-                    //Creo que se puede optimizar la segunda condición del if
-                    else if(grup2_max < s.getNumberOfPiecesPerColor(CellType.opposite(jugador))/2)
-                        grup2_max = Math.max(busca_veines(i, j, s.getPos(i,j), s, visited), grup2_max);
-                }
-                if(grup1_max >= s.getNumberOfPiecesPerColor(jugador)/2 && grup2_max >= s.getNumberOfPiecesPerColor(CellType.opposite(jugador))/2)
-                    break;
-                visited[i][j] = true;  //puede irse 
+        ArrayList<Point> fitxes = new ArrayList<>();
+        ArrayList<Boolean> visitades = new ArrayList<>();
+        for (int i = 0 ; i < s.getNumberOfPiecesPerColor(jugador) ; i++) {
+            fitxes.add(s.getPiece(jugador, i));
+            visitades.add(false);
+        }
+
+        for (int i = 0; i < fitxes.size(); i++) {
+            if(!visitades.get(i)) {
+                busca_veines(i, fitxes, visitades);
             }
-            if(grup1_max >= s.getNumberOfPiecesPerColor(jugador)/2 && grup2_max >= s.getNumberOfPiecesPerColor(CellType.opposite(jugador))/2)
+
+            if(grup1_max >= (fitxes.size() - i))
                 break;
+
+            visitades.set(i,true);
         }
         
         // Retornem el valor de l'heuristica
-        return grup1_max - grup2_max;
+        return (grup1_max/s.getNumberOfPiecesPerColor(jugador)) - (grup2_max/s.getNumberOfPiecesPerColor(CellType.opposite(jugador)));
     }
     
     
-    public static int busca_veines(int fil, int col, CellType jugador, ElMeuStatus s, boolean visited[][]) {
-        if (visited[fil][col]) return 0;
+    public static int busca_veines(int posFitxa, ArrayList<Point> fitxes, ArrayList<Boolean> visitades) {
+        Point p = fitxes.get(posFitxa);
         int valor = 1;
-        visited[fil][col] = true;
-        
-        for (int i = fil-1; i < fil+1 && i <= visited.length; i++) {
-            if(i < 0) i = 0;
-            for (int j = col-1; j < col+1 && j <= visited.length ; j++) {
-                if(j < 0) j = 0;
-                if (i != fil && j != col && s.getPos(i, j) == jugador) {
-                    valor += busca_veines(i, j, jugador, s, visited);
-                }
+
+        for (int i = posFitxa; i < fitxes.size() - 1; i++) {
+            if (esVeina(p,fitxes.get(i))) {
+                visitades.set(i,true);
+                valor += busca_veines(posFitxa + 1, fitxes, visitades);
             }
         }
+
         return valor;
-        
     }
+
+    public static boolean esVeina(Point a, Point b) {
+        double x = Math.abs(a.x - b.x);
+        double y = Math.abs(a.y - b.y);
+        return (x <= 1) && (y <= 1);
+    }
+
 }

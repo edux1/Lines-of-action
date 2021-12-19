@@ -25,9 +25,7 @@ public class temate_otrave implements IPlayer, IAuto {
     public Move move(GameStatus gameStatus) {
         this.s = new ElMeuStatus(gameStatus);
 
-        CellType color = s.getCurrentPlayer();
-
-        Map.Entry<Point, Point> millorMoviment = minimax_AlfaBeta.Tria_Moviment(s, 2);
+        Map.Entry<Point, Point> millorMoviment = minimax_AlfaBeta.Tria_Moviment(s, 6);
         Point origen = millorMoviment.getKey();
         Point desti = millorMoviment.getValue();
 
