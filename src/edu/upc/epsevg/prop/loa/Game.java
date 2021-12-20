@@ -13,18 +13,18 @@ public class Game {
      * @param args
      */
     public static void main(String[] args) {
-        
+
         
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 
 //                IPlayer player1 = new RandomPlayer("Random alejandro");
-                IPlayer player1 = new BuckyPlayer(4);
-//                IPlayer player1 = new MCCloudPlayer();
-                IPlayer player2 = new temate_otrave("Sintes Jordi", 4);
+//                IPlayer player1 = new BuckyPlayer(4);
+                IPlayer player1 = new MCCloudPlayer();
+                IPlayer player2 = new temate_otrave("Sintes Jordi", 5);
                                 
-                new Board(player1 , player2, 10, Level.DIFFICULT);
+                new Board(player1 , player2, 2, Level.DIFFICULT);
              }
         });
     }

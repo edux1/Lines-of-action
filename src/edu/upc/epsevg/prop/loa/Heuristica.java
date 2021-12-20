@@ -10,8 +10,11 @@ import java.util.ArrayList;
 public class Heuristica {
     
     public static int calcula(ElMeuStatus estat, CellType jugador) {
-        int score = heuristica_centre(estat, jugador) - heuristica_centre(estat, CellType.opposite(jugador));
-        System.out.println("Heuristica: " + score);
+        int score1 = heuristica_centre(estat, jugador) - heuristica_centre(estat, CellType.opposite(jugador));
+        int score2 = heuristica_1(estat, jugador) - heuristica_1(estat, CellType.opposite(jugador));
+        int score = score1 + score2;
+
+//        System.out.println("Heuristica: " + score);
         return score;
     }
 
@@ -21,6 +24,7 @@ public class Heuristica {
 
         ArrayList<Point> fitxes = new ArrayList<>();
         ArrayList<Boolean> visitades = new ArrayList<>();
+
         for (int i = 0 ; i < s.getNumberOfPiecesPerColor(jugador) ; i++) {
             fitxes.add(s.getPiece(jugador, i));
             visitades.add(false);
@@ -38,7 +42,7 @@ public class Heuristica {
         }
         
         // Retornem el valor de l'heuristica
-        return (int) ( ( (float) grup_max / s.getNumberOfPiecesPerColor(jugador)) * 100);
+        return (int) ( ( (float) grup_max / s.getNumberOfPiecesPerColor(jugador)) * 50);
     }
 
 
