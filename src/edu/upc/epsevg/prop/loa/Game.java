@@ -22,7 +22,7 @@ public class Game {
 //                IPlayer player1 = new RandomPlayer("Random alejandro");
 //                IPlayer player1 = new BuckyPlayer(4);
                 IPlayer player1 = new MCCloudPlayer();
-                IPlayer player2 = new temate_otrave("Ganbare senpai", 4);
+                IPlayer player2 = new temate_otrave("Senpai", 4);
                                 
                 new Board(player1 , player2, 2, Level.DIFFICULT);
              }

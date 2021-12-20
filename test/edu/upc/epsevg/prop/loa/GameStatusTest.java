@@ -5,24 +5,21 @@
  */
 package edu.upc.epsevg.prop.loa;
 
-import edu.upc.epsevg.prop.loa.GameStatus;
-import edu.upc.epsevg.prop.loa.CellType;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author Usuari
  */
 public class GameStatusTest {
-    
+
     public GameStatusTest() {
     }
 
-    
+
     @Test
     public void testGetHeuristic() {
-        
+
         int matrix[][] = new int[][] {
             {+0,-1,-1,-1, 0,-1,-1,+0},
             {+1,+0,+0,+0,+0,+0,+0,+1},
@@ -40,11 +37,10 @@ public class GameStatusTest {
 
         // Imprime heuristica
         System.out.println("Heuristica blancas: " + Heuristica.calcula(gs, CellType.PLAYER1));
-        System.out.println("Heuristica negras: " + Heuristica.calcula(gs, CellType.PLAYER2));
 
         System.out.println("=========================================================");
 
     }
 
-    
+
 }
