@@ -3,6 +3,7 @@ package edu.upc.epsevg.prop.loa.players;
 import edu.upc.epsevg.prop.loa.*;
 import java.awt.*;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 public class temate_otrave implements IPlayer, IAuto {
 
@@ -18,17 +19,24 @@ public class temate_otrave implements IPlayer, IAuto {
     @Override
     public Move move(GameStatus gameStatus) {
         this.s = new ElMeuStatus(gameStatus);
+        Map.Entry<Point, Point> millorMoviment = null;
+        Point origen = new Point();
+        Point desti = new Point();
 
-        Map.Entry<Point, Point> millorMoviment = minimax_AlfaBeta.Tria_Moviment(s, profunditat);
-        Point origen = millorMoviment.getKey();
-        Point desti = millorMoviment.getValue();
+//        Map.Entry<Point, Point> millorMoviment = minimax_AlfaBeta.Tria;
 
-        return new Move(origen, desti, 0, 0, SearchType.MINIMAX);
+        try {
+            millorMoviment = MinmaxIDS.start(s, 1);
+            origen = millorMoviment.getKey();
+            desti = millorMoviment.getValue();
+        } catch (InterruptedException ignored) {}
+
+        return new Move(origen, desti, 0, 0, SearchType.MINIMAX_IDS);
     }
 
     @Override
     public void timeout() {
-        System.out.println("timeout");
+        MinmaxIDS.timeout();
     }
 
     @Override

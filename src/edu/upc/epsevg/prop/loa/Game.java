@@ -21,10 +21,10 @@ public class Game {
                 
 //                IPlayer player1 = new RandomPlayer("Random alejandro");
 //                IPlayer player1 = new BuckyPlayer(4);
-                IPlayer player1 = new MCCloudPlayer();
-                IPlayer player2 = new temate_otrave("Senpai", 4);
-                                
-                new Board(player1 , player2, 2, Level.DIFFICULT);
+                IPlayer player1 = new temate_otrave("Senpai", 4);
+                IPlayer player2 = new MCCloudPlayer();
+
+                new Board(player1 , player2, 6, Level.DIFFICULT);
              }
         });
     }
