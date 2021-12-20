@@ -38,7 +38,7 @@ public class minimax_AlfaBeta {
     public static int maxvalor(ElMeuStatus estat, int profunditat, int alfa , int beta) {
         // No podemos seguir o llegado a la hoja
         if (estat.checkGameOver() || profunditat == 0) {
-            return Heuristica.calcula(estat, CellType.opposite(estat.getCurrentPlayer())) ;
+            return Heuristica.calcula(estat, estat.getCurrentPlayer());
         }
 
         int valor = Integer.MIN_VALUE;
@@ -71,7 +71,7 @@ public class minimax_AlfaBeta {
     public static int minvalor(ElMeuStatus estat, int profunditat, int alfa , int beta) {
         // No podemos seguir o llegado a la hoja
         if (estat.checkGameOver() || profunditat == 0) {
-            return Heuristica.calcula(estat, CellType.opposite(estat.getCurrentPlayer()));
+            return Heuristica.calcula(estat, estat.getCurrentPlayer());
         }
 
         int valor = Integer.MAX_VALUE;
