@@ -4,6 +4,9 @@
  */
 package edu.upc.epsevg.prop.loa;
 
+import java.awt.*;
+import java.util.Map;
+
 /**
  *
  * @author edux
@@ -16,7 +19,7 @@ public class ElMeuStatus extends GameStatus {
 
     public ElMeuStatus(GameStatus gs) {
         super(gs);
-    }  
+    }
     
     
     

@@ -8,11 +8,20 @@ import java.util.ArrayList;
  * @author edux
  */
 public class Heuristica {
+
+    private static final int[][] puntuacions = new int[][] {
+            {1,1,1,1,1,1,1,1},
+            {1,4,4,4,4,4,4,1},
+            {1,4,5,5,5,5,4,1},
+            {1,4,5,5,5,5,4,1},
+            {1,4,5,5,5,5,4,1},
+            {1,4,5,5,5,5,4,1},
+            {1,4,4,4,4,4,4,1},
+            {1,1,1,1,1,1,1,1}
+    };
     
     public static int calcula(ElMeuStatus estat, CellType jugador) {
-        int score1 = heuristica_centre(estat, jugador) - heuristica_centre(estat, CellType.opposite(jugador));
-        int score2 = heuristica_1(estat, jugador) - heuristica_1(estat, CellType.opposite(jugador));
-        int score = score1 + score2;
+        int score = heuristica_1(estat, jugador) - heuristica_1(estat, CellType.opposite(jugador));
 
 //        System.out.println("Heuristica: " + score);
         return score;
@@ -20,19 +29,19 @@ public class Heuristica {
 
     
     public static int heuristica_1(ElMeuStatus s, CellType jugador) {
-        int grup_max = 0;
+        int grup_max = 1;
 
         ArrayList<Point> fitxes = new ArrayList<>();
         ArrayList<Boolean> visitades = new ArrayList<>();
 
-        for (int i = 0 ; i < s.getNumberOfPiecesPerColor(jugador) ; i++) {
+        for (int i = 1 ; i < s.getNumberOfPiecesPerColor(jugador) ; i++) {
             fitxes.add(s.getPiece(jugador, i));
             visitades.add(false);
         }
 
-        for (int i = 0; i < fitxes.size(); i++) {
+        for (int i = 1; i < fitxes.size(); i++) {
             if(!visitades.get(i)) {
-                grup_max = busca_veines(i, fitxes, visitades);
+                grup_max = suma_veines(i, fitxes, visitades);
             }
 
             if(grup_max >= (fitxes.size() - i))
@@ -42,24 +51,14 @@ public class Heuristica {
         }
         
         // Retornem el valor de l'heuristica
-        return (int) ( ( (float) grup_max / s.getNumberOfPiecesPerColor(jugador)) * 50);
+        return (int) ( ( (float) grup_max / s.getNumberOfPiecesPerColor(jugador)) * 12);
     }
 
 
     public static int heuristica_centre(ElMeuStatus s, CellType jugador) {
-        int score = 0;
-        int[][] puntuacions = new int[][] {
-            {0,0,0,0,0,0,0,0},
-            {0,1,1,1,1,1,1,0},
-            {0,1,3,3,3,3,1,0},
-            {0,1,3,7,7,3,1,0},
-            {0,1,3,7,7,3,1,0},
-            {0,1,3,3,3,3,1,0},
-            {0,1,1,1,1,1,1,0},
-            {0,0,0,0,0,0,0,0}
-        };
+        int score = 1;
 
-        for (int i = 0 ; i < s.getNumberOfPiecesPerColor(jugador) ; i++) {
+        for (int i = 1 ; i < s.getNumberOfPiecesPerColor(jugador) ; i++) {
             Point p = s.getPiece(jugador, i);
             score += puntuacions[p.x][p.y];
         }
@@ -68,14 +67,27 @@ public class Heuristica {
     }
     
     
-    public static int busca_veines(int posFitxa, ArrayList<Point> fitxes, ArrayList<Boolean> visitades) {
+    public static int suma_veines(int posFitxa, ArrayList<Point> fitxes, ArrayList<Boolean> visitades) {
         Point p = fitxes.get(posFitxa);
-        int valor = 1;
+        int valor = puntuacions[p.x][p.y] * num_veines(posFitxa, fitxes);
 
         for (int i = posFitxa; i < fitxes.size() - 1; i++) {
             if ( (esVeina(p,fitxes.get(i))) && (fitxes.get(i) != p) && (!visitades.get(i)) ) {
                 visitades.set(i,true);
-                valor += busca_veines(posFitxa + 1, fitxes, visitades);
+                valor += suma_veines(posFitxa + 1, fitxes, visitades);
+            }
+        }
+
+        return valor;
+    }
+
+    public static int num_veines(int posFitxa, ArrayList<Point> fitxes) {
+        Point p = fitxes.get(posFitxa);
+        int valor = 0;
+
+        for (int i = 0; i < fitxes.size() - 1; i++) {
+            if ( (esVeina(p,fitxes.get(i))) && (fitxes.get(i) != p) ) {
+                valor++;
             }
         }
 

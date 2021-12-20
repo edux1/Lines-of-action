@@ -24,38 +24,27 @@ public class GameStatusTest {
     public void testGetHeuristic() {
         
         int matrix[][] = new int[][] {
-            {+0,-1,-1,-1,-1,-1,-1,+0},
+            {+0,-1,-1,-1, 0,-1,-1,+0},
             {+1,+0,+0,+0,+0,+0,+0,+1},
             {+1,+0,+0,+0,+0,+0,+0,+1},
-            {+1,+0,+0,+0,+0,+0,+0,+1},
-            {+1,+0,+0,+0,+0,+0,+0,+1},
+            {0,+0,+0,+1,+1,+0,+0,0},
+            {0,+0,+0,+1,+1,+0,+0,0},
             {+1,+0,+0,+0,+0,+0,+0,+1},
             {+1,+0,+0,+0,+0,+0,+0,+1},
             {+0,-1,-1,-1,-1,-1,-1,+0}
         };
-        GameStatus gs = new GameStatus(matrix);
-        System.out.println(gs.toString());        
+        ElMeuStatus gs = new ElMeuStatus(matrix);
+
+        // Imprime tablero
+        System.out.println(gs.toString());
+
+        // Imprime heuristica
+        System.out.println("Heuristica blancas: " + Heuristica.calcula(gs, CellType.PLAYER1));
+        System.out.println("Heuristica negras: " + Heuristica.calcula(gs, CellType.PLAYER2));
+
         System.out.println("=========================================================");
-               
-       
-        int matrix2[][] = 
-        new int[][] {
-            {+0,-1,-1,-1,-1,-1,-1,+0},
-            {+0,+0,+0,+0,+0,+0,+0,+0},
-            {+0,+0,+0,+1,+0,+0,+0,+1},
-            {+0,+0,+0,+1,+1,+1,+1,+0},
-            {+0,+0,+0,+1,+1,+0,+0,+1},
-            {+0,+0,+0,+1,+0,+0,+0,+1},
-            {+0,+0,+0,+0,+0,+0,+0,+1},
-            {+0,-1,-1,-1,-1,-1,-1,+0}
-        };            
-        GameStatus gs2 = new GameStatus(matrix2);
-        System.out.println(gs2.toString());
-        System.out.println(gs2.getPos(7, 2));
-        System.out.println("=========================================================");
-        
+
     }
 
- 
     
 }

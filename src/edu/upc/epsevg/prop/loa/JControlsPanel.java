@@ -112,7 +112,7 @@ public class JControlsPanel extends javax.swing.JPanel implements ActionListener
         txfPlayer1 = new javax.swing.JTextField();
         txfPlayer2 = new javax.swing.JTextField();
         btnStart = new javax.swing.JButton();
-        lblThinking = new JLabel(new ImageIcon(this.getClass().getResource("/resources/Gears.gif")));
+        lblThinking = new JLabel(new ImageIcon(this.getClass().getResource("/resources/ganbare-ganbare-senpai.gif")));
         jLabel1 = new JLabel(new ImageIcon(new ImageIcon(this.getClass().getResource("/resources/black.png")).getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
         jLabel3 = new JLabel(new ImageIcon(new ImageIcon(this.getClass().getResource("/resources/white.png")).getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
         jScrollPane1 = new javax.swing.JScrollPane();
