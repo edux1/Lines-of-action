@@ -2,15 +2,13 @@ package edu.upc.epsevg.prop.loa;
 
 import java.awt.*;
 import java.util.Map;
-import java.util.concurrent.TimeoutException;
-
 
 public class MinmaxIDS {
 
     private static volatile boolean timeout;
 
     public static Map.Entry<Point, Point> start(ElMeuStatus estat, int profunditatInicial) throws InterruptedException {
-        Map.Entry<Point, Point> moviment = null;
+        Map.Entry<Point, Point> moviment;
         timeout = false;
 
         MinmaxIDSRunnable ids = new MinmaxIDSRunnable(estat,profunditatInicial);
@@ -23,7 +21,6 @@ public class MinmaxIDS {
         }
 
         moviment = ids.getMoviment();
-        System.out.println("Timeout IDS");
         thread.interrupt();
 
         return moviment;
@@ -52,7 +49,6 @@ class MinmaxIDSRunnable implements Runnable {
         while (true) {
             moviment = Tria_Moviment(estat, profunditat);
             profunditat++;
-            System.out.println("Baja profundidad");
         }
     }
 

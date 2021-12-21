@@ -8,13 +8,11 @@ public class MinmaxIDSZobrist {
 
     private static volatile boolean timeout;
     
-    
-    
-    public static Map.Entry<Point, Point> start(ElMeuStatus estat, int profunditatInicial) throws InterruptedException {
-        Map.Entry<Point, Point> moviment = null;
+    public static Transposition start(ElMeuStatus estat, int profunditatInicial) throws InterruptedException {
+        Transposition result;
         timeout = false;
 
-        MinmaxIDSRunnable ids = new MinmaxIDSRunnable(estat,profunditatInicial);
+        MinmaxIDSZobristRunnable ids = new MinmaxIDSZobristRunnable(estat,profunditatInicial);
         Thread thread = new Thread(ids);
         thread.start();
 
@@ -23,10 +21,10 @@ public class MinmaxIDSZobrist {
             Thread.onSpinWait();
         }
 
-        moviment = ids.getMoviment();
+        result = ids.getResult();
         thread.interrupt();
 
-        return moviment;
+        return result;
     }
 
     public static void timeout() {
@@ -38,24 +36,25 @@ public class MinmaxIDSZobrist {
 class MinmaxIDSZobristRunnable implements Runnable {
 
     private final ElMeuStatus estat;
-    private volatile Map.Entry<Point, Point> moviment;
+    private volatile Transposition result;
     private int profunditat;
 
     public MinmaxIDSZobristRunnable(ElMeuStatus estat, int profunditat) {
         this.estat = estat;
         this.profunditat = profunditat;
-        this.moviment = null;
+        this.result = null;
     }
 
     @Override
     public void run() {
         while (true) {
-            moviment = Tria_Moviment(estat, profunditat);
+            result = ( Tria_Moviment(estat, profunditat) );
+            result.setProfunditat(profunditat);
             profunditat++;
         }
     }
 
-    public static Map.Entry<Point, Point> Tria_Moviment(ElMeuStatus estat, int profunditat) {
+    public static Transposition Tria_Moviment(ElMeuStatus estat, int profunditat) {
         int valor = Integer.MIN_VALUE;
         Map.Entry<Point, Point> millorMoviment = Map.entry(new Point(),new Point());
 
@@ -70,16 +69,19 @@ class MinmaxIDSZobristRunnable implements Runnable {
 
                 //Caso ganador
                 if(aux.isGameOver() && aux.GetWinner() == estat.getCurrentPlayer())
-                    return Map.entry(posAct, pos);
+                    return new Transposition(millorMoviment,0,valor, alfa, beta);
 
-                int min = minvalor(aux, profunditat-1, alfa, beta);
-                if (min >= valor) {
-                    valor = min;
-                    millorMoviment = Map.entry(posAct, pos);
+                if (!aux.isGameOver()) {
+                    int min = minvalor(aux, profunditat-1, alfa, beta);
+                    if (min >= valor) {
+                        valor = min;
+                        millorMoviment = Map.entry(posAct, pos);
+                    }
                 }
             }
         }
-        return millorMoviment;
+
+        return new Transposition(millorMoviment,0, valor, alfa, beta);
     }
 
 
@@ -87,7 +89,12 @@ class MinmaxIDSZobristRunnable implements Runnable {
     public static int maxvalor(ElMeuStatus estat, int profunditat, int alfa , int beta) {
         // No podemos seguir o llegado a la hoja
         if (estat.checkGameOver() || profunditat == 0) {
-            return Heuristica.calcula(estat, estat.getCurrentPlayer());
+            int heu = Heuristica.calcula(estat, estat.getCurrentPlayer());
+
+            // Guarda hash version 2
+            // estat.guarda_hash();
+
+            return heu;
         }
 
         int valor = Integer.MIN_VALUE;
@@ -107,12 +114,17 @@ class MinmaxIDSZobristRunnable implements Runnable {
                 valor = Math.max(valor, minvalor(aux, profunditat - 1, alfa,beta));
 
                 // Poda alfa beta
-                if (beta <= valor)
+                if (beta <= valor) {
+                    // Guarda hash version 2
+                    // estat.guarda_hash();
                     return valor;
+                }
                 alfa = Math.max(valor,alfa);
 
             }
         }
+        // Guarda hash version 2
+        // estat.guarda_hash();
         return valor;
     }
 
@@ -149,7 +161,7 @@ class MinmaxIDSZobristRunnable implements Runnable {
         return valor;
     }
 
-    public Map.Entry<Point, Point> getMoviment() {
-        return moviment;
+    public Transposition getResult() {
+        return this.result;
     }
 }

@@ -21,7 +21,7 @@ public class Game {
                 
 //                IPlayer player1 = new RandomPlayer("Random alejandro");
 //                IPlayer player1 = new BuckyPlayer(4);
-                IPlayer player1 = new temate_otrave("Senpai", 4);
+                IPlayer player1 = new temate_otrave("Temate Otrave", 4);
                 IPlayer player2 = new MCCloudPlayer();
 
                 new Board(player1 , player2, 6, Level.DIFFICULT);
