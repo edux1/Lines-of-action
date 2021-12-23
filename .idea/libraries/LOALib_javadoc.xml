@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="LOALib_javadoc">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/LOALib_javadoc/member-search-index.zip!/" />
+      <root url="jar://$PROJECT_DIR$/lib/LOALib_javadoc/type-search-index.zip!/" />
+      <root url="jar://$PROJECT_DIR$/lib/LOALib_javadoc/package-search-index.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

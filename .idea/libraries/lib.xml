@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/LOALib_obfs.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/LOALib_javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/LOAPlayer_obfs_r.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib/LOAPlayer_obfs_r.jar!/" />
+    </SOURCES>
+  </library>
+</component>
