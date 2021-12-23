@@ -58,21 +58,24 @@ class MinmaxIDSRunnable implements Runnable {
 
         int alfa = Integer.MIN_VALUE;
         int beta = Integer.MAX_VALUE;
-
-        for (int i = 0; i < estat.getNumberOfPiecesPerColor(estat.getCurrentPlayer()); i++) {
-            Point posAct = estat.getPiece(estat.getCurrentPlayer(), i);
+        
+        CellType jugador = estat.getCurrentPlayer();
+        
+        for (int i = 0; i < estat.getNumberOfPiecesPerColor(jugador); i++) {
+            Point posAct = estat.getPiece(jugador, i);
             for (Point pos : estat.getMoves(posAct)) {
                 ElMeuStatus aux = new ElMeuStatus(estat);
                 aux.movePiece(posAct, pos);
 
                 //Caso ganador
-                if(aux.isGameOver() && aux.GetWinner() == estat.getCurrentPlayer())
+                if(aux.isGameOver() && aux.GetWinner() == jugador)
                     return Map.entry(posAct, pos);
-
-                int min = minvalor(aux, profunditat-1, alfa, beta);
-                if (min >= valor) {
-                    valor = min;
-                    millorMoviment = Map.entry(posAct, pos);
+                else if(!aux.isGameOver()) {
+                    int min = minvalor(aux, profunditat-1, alfa, beta, jugador);
+                    if (min >= valor) {
+                        valor = min;
+                        millorMoviment = Map.entry(posAct, pos);
+                    }
                 }
             }
         }
@@ -81,10 +84,10 @@ class MinmaxIDSRunnable implements Runnable {
 
 
 
-    public static int maxvalor(ElMeuStatus estat, int profunditat, int alfa , int beta) {
+    public static int maxvalor(ElMeuStatus estat, int profunditat, int alfa , int beta, CellType jugador) {
         // No podemos seguir o llegado a la hoja
         if (estat.checkGameOver() || profunditat == 0) {
-            return Heuristica.calcula(estat, estat.getCurrentPlayer());
+            return Heuristica.calcula(estat, jugador);
         }
 
         int valor = Integer.MIN_VALUE;
@@ -96,12 +99,10 @@ class MinmaxIDSRunnable implements Runnable {
                 aux.movePiece(posAct, pos);
 
                 // Caso ganador
-                if(aux.isGameOver() && aux.GetWinner() == estat.getCurrentPlayer())
+                if(aux.isGameOver() && aux.GetWinner() == jugador)
                     return Integer.MAX_VALUE;
-                else if (aux.isGameOver() && aux.GetWinner() == CellType.opposite(estat.getCurrentPlayer()))
-                    return Integer.MIN_VALUE;
-
-                valor = Math.max(valor, minvalor(aux, profunditat - 1, alfa,beta));
+                else if (!aux.isGameOver())
+                    valor = Math.max(valor, minvalor(aux, profunditat - 1, alfa,beta, jugador));
 
                 // Poda alfa beta
                 if (beta <= valor)
@@ -114,10 +115,10 @@ class MinmaxIDSRunnable implements Runnable {
     }
 
 
-    public static int minvalor(ElMeuStatus estat, int profunditat, int alfa , int beta) {
+    public static int minvalor(ElMeuStatus estat, int profunditat, int alfa , int beta, CellType jugador) {
         // No podemos seguir o llegado a la hoja
         if (estat.checkGameOver() || profunditat == 0) {
-            return Heuristica.calcula(estat, estat.getCurrentPlayer());
+            return Heuristica.calcula(estat, jugador);
         }
 
         int valor = Integer.MAX_VALUE;
@@ -129,12 +130,10 @@ class MinmaxIDSRunnable implements Runnable {
                 aux.movePiece(posAct, pos);
 
                 // Caso ganador
-                if(aux.isGameOver() && aux.GetWinner() == estat.getCurrentPlayer())
+                if(aux.isGameOver() && aux.GetWinner() == CellType.opposite(jugador))
                     return Integer.MIN_VALUE;
-                else if (aux.isGameOver() && aux.GetWinner() == CellType.opposite(estat.getCurrentPlayer()))
-                    return Integer.MAX_VALUE;
-
-                valor = Math.min(valor, maxvalor(aux, profunditat - 1, alfa,beta));
+                else if (!aux.isGameOver())
+                    valor = Math.min(valor, maxvalor(aux, profunditat - 1, alfa,beta, jugador));
 
                 // Poda alfa beta
                 if (valor <= alfa)

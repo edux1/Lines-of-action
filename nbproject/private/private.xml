@@ -3,10 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/edux/NetBeansProjects/TestGitNetbeans/Lines-of-action/src/edu/upc/epsevg/prop/loa/players/RandomPlayer.java</file>
-            <file>file:/home/edux/NetBeansProjects/TestGitNetbeans/Lines-of-action/src/edu/upc/epsevg/prop/loa/Heuristica.java</file>
-            <file>file:/home/edux/NetBeansProjects/TestGitNetbeans/Lines-of-action/src/edu/upc/epsevg/prop/loa/minimax_AlfaBeta.java</file>
-            <file>file:/home/edux/NetBeansProjects/TestGitNetbeans/Lines-of-action/src/edu/upc/epsevg/prop/loa/players/tematé_otravé.java</file>
+            <file>file:/C:/Users/Edux1/Desktop/Edu/Netbeans/Lines-of-action/test/edu/upc/epsevg/prop/loa/GameStatusTest.java</file>
+            <file>file:/C:/Users/Edux1/Desktop/Edu/Netbeans/Lines-of-action/src/edu/upc/epsevg/prop/loa/players/temate_otrave.java</file>
+            <file>file:/C:/Users/Edux1/Desktop/Edu/Netbeans/Lines-of-action/src/edu/upc/epsevg/prop/loa/Heuristica.java</file>
+            <file>file:/C:/Users/Edux1/Desktop/Edu/Netbeans/Lines-of-action/src/edu/upc/epsevg/prop/loa/Minimax_AlfaBeta.java</file>
+            <file>file:/C:/Users/Edux1/Desktop/Edu/Netbeans/Lines-of-action/src/edu/upc/epsevg/prop/loa/MinmaxIDSZobrist.java</file>
+            <file>file:/C:/Users/Edux1/Desktop/Edu/Netbeans/Lines-of-action/src/edu/upc/epsevg/prop/loa/Game.java</file>
+            <file>file:/C:/Users/Edux1/Desktop/Edu/Netbeans/Lines-of-action/src/edu/upc/epsevg/prop/loa/MinmaxIDS.java</file>
+            <file>file:/C:/Users/Edux1/Desktop/Edu/Netbeans/Lines-of-action/src/edu/upc/epsevg/prop/loa/Minmax.java</file>
         </group>
     </open-files>
 </project-private>
