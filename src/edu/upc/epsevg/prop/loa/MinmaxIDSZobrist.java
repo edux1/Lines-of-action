@@ -3,13 +3,12 @@ package edu.upc.epsevg.prop.loa;
 import java.awt.*;
 import java.util.Map;
 
-
 public class MinmaxIDSZobrist {
 
     private static volatile boolean timeout;
     
-    public static Transposition start(ElMeuStatus estat, int profunditatInicial) throws InterruptedException {
-        Transposition result;
+    public static Map.Entry<Point, Point> start(ElMeuStatus estat, int profunditatInicial) throws InterruptedException {
+        Map.Entry<Point, Point> result;
         timeout = false;
 
         MinmaxIDSZobristRunnable ids = new MinmaxIDSZobristRunnable(estat,profunditatInicial);
@@ -21,7 +20,7 @@ public class MinmaxIDSZobrist {
             Thread.onSpinWait();
         }
 
-        result = ids.getResult();
+        result = ids.getBestMove();
         thread.interrupt();
 
         return result;
@@ -35,26 +34,25 @@ public class MinmaxIDSZobrist {
 
 class MinmaxIDSZobristRunnable implements Runnable {
 
-    private final ElMeuStatus estat;
-    private volatile Transposition result;
+    private ElMeuStatus estat;
+    private volatile Map.Entry<Point, Point> bestMove;
     private int profunditat;
 
     public MinmaxIDSZobristRunnable(ElMeuStatus estat, int profunditat) {
         this.estat = estat;
         this.profunditat = profunditat;
-        this.result = null;
+        this.bestMove = null;
     }
 
     @Override
     public void run() {
         while (true) {
-            result = ( Tria_Moviment(estat, profunditat) );
-            result.setProfunditat(profunditat);
+            bestMove = ( Tria_Moviment(estat, profunditat) );
             profunditat++;
         }
     }
 
-    public static Transposition Tria_Moviment(ElMeuStatus estat, int profunditat) {
+    public static Map.Entry<Point, Point> Tria_Moviment(ElMeuStatus estat, int profunditat) {
         int valor = Integer.MIN_VALUE;
         Map.Entry<Point, Point> millorMoviment = Map.entry(new Point(),new Point());
 
@@ -65,11 +63,14 @@ class MinmaxIDSZobristRunnable implements Runnable {
             Point posAct = estat.getPiece(estat.getCurrentPlayer(), i);
             for (Point pos : estat.getMoves(posAct)) {
                 ElMeuStatus aux = new ElMeuStatus(estat);
+
                 aux.movePiece(posAct, pos);
 
                 //Caso ganador
-                if(aux.isGameOver() && aux.GetWinner() == estat.getCurrentPlayer())
-                    return new Transposition(millorMoviment,0,valor, alfa, beta);
+                if(aux.isGameOver() && aux.GetWinner() == estat.getCurrentPlayer()) {
+                    estat.put_transposicio(Map.entry(posAct, pos), valor, profunditat);
+                    return Map.entry(posAct, pos);
+                }
 
                 if (!aux.isGameOver()) {
                     int min = minvalor(aux, profunditat-1, alfa, beta);
@@ -81,7 +82,8 @@ class MinmaxIDSZobristRunnable implements Runnable {
             }
         }
 
-        return new Transposition(millorMoviment,0, valor, alfa, beta);
+        estat.put_transposicio(millorMoviment, valor, profunditat);
+        return millorMoviment;
     }
 
 
@@ -91,40 +93,46 @@ class MinmaxIDSZobristRunnable implements Runnable {
         if (estat.checkGameOver() || profunditat == 0) {
             int heu = Heuristica.calcula(estat, estat.getCurrentPlayer());
 
-            // Guarda hash version 2
-            // estat.guarda_hash();
-
             return heu;
         }
+
+        System.out.println(estat.toString());
 
         int valor = Integer.MIN_VALUE;
 
         for (int i = 0; i < estat.getNumberOfPiecesPerColor(estat.getCurrentPlayer()); i++) {
-            Point posAct = estat.getPiece(estat.getCurrentPlayer(), i);
+            int millorInici = i;
+
+            // Zobrist per comencar per la millor posicio
+            Point millorFitxa = estat.get_transposicio().getMillorMoviment().getKey();
+            if (millorFitxa != null)
+                millorInici = (i + estat.findPiece( millorFitxa , estat.getCurrentPlayer())) % estat.getNumberOfPiecesPerColor(estat.getCurrentPlayer());
+
+            Point posAct = estat.getPiece(estat.getCurrentPlayer(), millorInici);
             for (Point pos : estat.getMoves(posAct)) {
                 ElMeuStatus aux = new ElMeuStatus(estat);
                 aux.movePiece(posAct, pos);
 
                 // Caso ganador
-                if(aux.isGameOver() && aux.GetWinner() == estat.getCurrentPlayer())
+                if(aux.isGameOver() && aux.GetWinner() == estat.getCurrentPlayer()) {
+                    // estat.guarda_hash(Map.entry(posAct, pos), valor, profunditat);
                     return Integer.MAX_VALUE;
-                else if (aux.isGameOver() && aux.GetWinner() == CellType.opposite(estat.getCurrentPlayer()))
+                } else if (aux.isGameOver() && aux.GetWinner() == CellType.opposite(estat.getCurrentPlayer()))
                     return Integer.MIN_VALUE;
 
                 valor = Math.max(valor, minvalor(aux, profunditat - 1, alfa,beta));
 
                 // Poda alfa beta
                 if (beta <= valor) {
-                    // Guarda hash version 2
-                    // estat.guarda_hash();
+                    // estat.guarda_hash(Map.entry(posAct, pos), valor, profunditat);
                     return valor;
                 }
                 alfa = Math.max(valor,alfa);
 
             }
         }
-        // Guarda hash version 2
-        // estat.guarda_hash();
+
+//        estat.guarda_hash();
         return valor;
     }
 
@@ -149,7 +157,7 @@ class MinmaxIDSZobristRunnable implements Runnable {
                 else if (aux.isGameOver() && aux.GetWinner() == CellType.opposite(estat.getCurrentPlayer()))
                     return Integer.MAX_VALUE;
 
-                valor = Math.min(valor, maxvalor(aux, profunditat - 1, alfa,beta));
+                valor = Math.min(valor, maxvalor(aux, profunditat - 1, alfa, beta));
 
                 // Poda alfa beta
                 if (valor <= alfa)
@@ -161,7 +169,7 @@ class MinmaxIDSZobristRunnable implements Runnable {
         return valor;
     }
 
-    public Transposition getResult() {
-        return this.result;
+    public Map.Entry<Point, Point> getBestMove() {
+        return this.bestMove;
     }
 }

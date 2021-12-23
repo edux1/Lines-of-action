@@ -2,7 +2,6 @@ package edu.upc.epsevg.prop.loa.players;
 
 import edu.upc.epsevg.prop.loa.*;
 import java.awt.*;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.Random;
 
@@ -12,7 +11,7 @@ public class temate_otrave implements IPlayer, IAuto {
     private ElMeuStatus s;
     private int profunditat;
 
-    // Taula Zobrist Hashing
+    // Taula Zobrist Hashing (Nomes ha de calcularse un cop en tota la partida)
     private final int[][][] zobristTable;
 
     public temate_otrave(String name, int profunditat) {
@@ -31,37 +30,28 @@ public class temate_otrave implements IPlayer, IAuto {
         Point origen = new Point();
         Point desti = new Point();
 
-        // Minmax base
+        // Minmax basic
         // Map.Entry<Point, Point> millorMoviment = minimax.Tria_Moviment;
 
-        // Alfa Beta
+        // Minmax Poda Alfa Beta
         // Map.Entry<Point, Point> millorMoviment = minimax_AlfaBeta.Tria_Moviment;
 
-        // IDS
+        // Minmax IDS
         //try {
         //    millorMoviment = MinmaxIDS.start(s, 2);
         //    origen = millorMoviment.getKey();
         //    desti = millorMoviment.getValue();
         //} catch (InterruptedException ignored) {}
 
-        // Zobrist
+        // Minmax Zobrist
         // Pendiente:
         // Implementarlo en max.
         // Hacer tabla con millormoviment, profundidad y heu.
         // No calcular de 0 cada estado, usar el anterior
         try {
-            Hashtable<Long, Transposition> transpositionHashtable = new Hashtable<>();
-
-            Transposition t = MinmaxIDSZobrist.start(s, 2);
-
-            millorMoviment = t.getMillorMoviment();
+            millorMoviment = MinmaxIDSZobrist.start(s, 1);
             origen = millorMoviment.getKey();
             desti = millorMoviment.getValue();
-
-            System.out.println("Heuristica: " + t.getHeuristica());
-            System.out.println("Profunditat: " + t.getProfunditat());
-
-            transpositionHashtable.put(s.getHash(), t);
         } catch (InterruptedException ignored) {}
 
         return new Move(origen, desti, 0, 0, SearchType.MINIMAX_IDS);

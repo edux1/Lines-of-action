@@ -2,6 +2,7 @@ package edu.upc.epsevg.prop.loa;
 
 import java.awt.*;
 import java.util.Hashtable;
+import java.util.Map;
 
 /**
  *
@@ -11,26 +12,44 @@ public class ElMeuStatus extends GameStatus {
 
     private long hash;
     private int[][][] zobristTable = new int[8][8][2];
-    Hashtable<Long, Transposition> transpositionHashtable;
+    private Hashtable<Long, Transposition> transpositionHashtable;
 
     // Constructor per als tests
     public ElMeuStatus(int [][] tauler) {
         super(tauler);
     }
 
-    // Constructor per al override de GameStatus
+    // Constructor por copia
     public ElMeuStatus(ElMeuStatus estat) {
         super(estat);
+        this.hash = estat.hash;
+        this.zobristTable = estat.zobristTable;
+        this.transpositionHashtable = estat.transpositionHashtable;
     }
 
     // Constructor per al override de GameStatus amb Zobrist Hashing
     public ElMeuStatus(GameStatus gs, int[][][] zobristTable) {
         super(gs);
         this.zobristTable = zobristTable;
-        transpositionHashtable = new Hashtable<>();
+        this.transpositionHashtable = new Hashtable<>();
 
         calcula_hash();
+
         System.out.println("Este estado tiene hash: " + hash);
+    }
+
+    public ElMeuStatus(int[][] ints, long hash, int[][][] zobristTable, Hashtable<Long, Transposition> transpositionHashtable) {
+        super(ints);
+        this.hash = hash;
+        this.zobristTable = zobristTable;
+        this.transpositionHashtable = transpositionHashtable;
+    }
+
+    public ElMeuStatus(GameStatus gameStatus, long hash, int[][][] zobristTable, Hashtable<Long, Transposition> transpositionHashtable) {
+        super(gameStatus);
+        this.hash = hash;
+        this.zobristTable = zobristTable;
+        this.transpositionHashtable = transpositionHashtable;
     }
 
     public void calcula_hash() {
@@ -47,9 +66,13 @@ public class ElMeuStatus extends GameStatus {
         }
     }
 
-//    public void guarda_hash(Map.Entry<Point, Point> millorMoviment, int profunditat, int heuristica) {
-//        transpositionHashtable.put(hash, new Transposition(millorMoviment, profunditat, heuristica));
-//    }
+    public void put_transposicio(Map.Entry<Point, Point> millorMoviment, int profunditat, int heuristica) {
+        this.transpositionHashtable.put(hash, new Transposition(millorMoviment, profunditat, heuristica));
+    }
+
+    public Transposition get_transposicio() {
+        return this.transpositionHashtable.get(hash);
+    }
 
     public long getHash() {
         return hash;
