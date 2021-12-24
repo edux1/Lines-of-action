@@ -60,6 +60,7 @@ class MinmaxIDSZobristRunnable implements Runnable {
         Map.Entry<Point, Point> millorMoviment = Map.entry(new Point(),new Point());
 
         // Incrementem els nodes explorats
+        nodes_explorats = 0;
         nodes_explorats++;
 
         int alfa = Integer.MIN_VALUE;
@@ -90,10 +91,10 @@ class MinmaxIDSZobristRunnable implements Runnable {
             }
         }
 
+        nodes_explorats_total += nodes_explorats;
         System.out.println("\n========== Profunditat " + profunditat + " ==========");
         System.out.println("Nodes explorats: " + nodes_explorats);
         System.out.println("Nodes explorats totals: " + nodes_explorats_total);
-        nodes_explorats = 0;
 
         estat.put_transposicio(millorMoviment, profunditat, valor);
         return millorMoviment;
