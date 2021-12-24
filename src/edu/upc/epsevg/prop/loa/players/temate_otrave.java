@@ -5,6 +5,9 @@ import java.awt.*;
 import java.util.Map;
 import java.util.Random;
 
+/**
+ * Jugador temate_otrave
+ */
 public class temate_otrave implements IPlayer, IAuto {
 
     private final String name;
@@ -17,6 +20,14 @@ public class temate_otrave implements IPlayer, IAuto {
     // Taula Zobrist Hashing (Nomes ha de calcularse un cop en tota la partida)
     private int[][][] zobristTable;
 
+    /**
+     * Constructor del jugador
+     * @param name Nom del jugador
+     * @param profunditatMaxima En cas de fer servir Minmax i alfabeta, serveix per indicar fins a quina profunditat màxima arribarà
+     * @param profunditatInicial En cas de fer servir IDS i Zobrist, serveix per indicar a quina profunditat començarà a explorar
+     * @param heuristicaSeleccionada Indica quina heuristica fara servir
+     * @param minmaxSeleccionat Indica quina implementació de minmax fara servir
+     */
     public temate_otrave(String name, int profunditatMaxima, int profunditatInicial, HeuristicaEnum heuristicaSeleccionada, MinmaxEnum minmaxSeleccionat) {
         this.name = name;
         this.profunditatMaxima = profunditatMaxima;
@@ -30,6 +41,11 @@ public class temate_otrave implements IPlayer, IAuto {
         }
     }
 
+    /**
+     * Realitza un moviment al tauler de joc
+     * @param gameStatus Dona informació del tauler de joc
+     * @return un objecte Move
+     */
     @Override
     public Move move(GameStatus gameStatus) {
 
@@ -58,6 +74,7 @@ public class temate_otrave implements IPlayer, IAuto {
                 origen = info.getMillorMoviment().getKey();
                 desti = info.getMillorMoviment().getValue();
                 return new Move(origen, desti, info.getNodes_explorats(), this.profunditatMaxima, SearchType.MINIMAX);
+
             // Minmax IDS
             case MINMAX_IDS:
                 try {
@@ -81,6 +98,9 @@ public class temate_otrave implements IPlayer, IAuto {
         return new Move(origen, desti, 0, 0, SearchType.RANDOM);
     }
 
+    /**
+     * Mètode que es crida quan arribem al timeout
+     */
     @Override
     public void timeout() {
         switch (this.minmaxSeleccionat) {
@@ -93,11 +113,18 @@ public class temate_otrave implements IPlayer, IAuto {
         }
     }
 
+    /**
+     * Retorna el nom del jugador
+     * @return el nom del jugador
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Omple la taula de zobrist de numeros aleatoris
+     */
     private void fill_Matrix() {
         for (int i = 0; i < zobristTable.length; i++) {
             for (int j = 0; j < zobristTable[0].length; j++) {
