@@ -7,60 +7,81 @@ import java.util.Random;
 
 public class temate_otrave implements IPlayer, IAuto {
 
-    private String name;
+    private final String name;
     private ElMeuStatus s;
-    private int profunditat;
+    private final int profunditatMaxima;
+    private final int profunditatInicial;
+    private final HeuristicaEnum heuristicaSeleccionada;
+    private final MinmaxEnum minmaxSeleccionat;
 
     // Taula Zobrist Hashing (Nomes ha de calcularse un cop en tota la partida)
-    private final int[][][] zobristTable;
+    private int[][][] zobristTable;
 
-    public temate_otrave(String name, int profunditat) {
+    public temate_otrave(String name, int profunditatMaxima, int profunditatInicial, HeuristicaEnum heuristicaSeleccionada, MinmaxEnum minmaxSeleccionat) {
         this.name = name;
-        this.profunditat = profunditat;
-        this.zobristTable = new int[8][8][2];
+        this.profunditatMaxima = profunditatMaxima;
+        this.profunditatInicial = profunditatInicial;
+        this.heuristicaSeleccionada = heuristicaSeleccionada;
+        this.minmaxSeleccionat = minmaxSeleccionat;
 
-        fill_Matrix();
+        if (this.minmaxSeleccionat.equals(MinmaxEnum.MINMAX_ZOBRIST)) {
+            this.zobristTable = new int[8][8][2];
+            fill_Matrix();
+        }
     }
 
     @Override
     public Move move(GameStatus gameStatus) {
-        this.s = new ElMeuStatus(gameStatus, this.zobristTable);
+
+        if (this.minmaxSeleccionat.equals(MinmaxEnum.MINMAX_ZOBRIST))
+            this.s = new ElMeuStatus(gameStatus, this.zobristTable);
+        else
+            this.s = new ElMeuStatus(gameStatus);
 
         Map.Entry<Point, Point> millorMoviment;
         Point origen = new Point();
         Point desti = new Point();
 
-        // Minmax basic
-        // Map.Entry<Point, Point> millorMoviment = minimax.Tria_Moviment;
+        switch (this.minmaxSeleccionat) {
 
-        // Minmax Poda Alfa Beta
-        // Map.Entry<Point, Point> millorMoviment = minimax_AlfaBeta.Tria_Moviment;
+            // Minmax basic
+            case MINMAX:
+                millorMoviment = Minmax.Tria_Moviment(this.s, this.heuristicaSeleccionada, this.profunditatMaxima);
+                return new Move(origen, desti, 0, 0, SearchType.MINIMAX);
 
-        // Minmax IDS
-        try {
-            millorMoviment = MinmaxIDS.start(s, 2);
-            origen = millorMoviment.getKey();
-            desti = millorMoviment.getValue();
-        } catch (InterruptedException ignored) {}
+            // Minmax Poda Alfa Beta
+            case MINMAX_ALFABETA:
+                millorMoviment = Minmax_AlfaBeta.Tria_Moviment(this.s, this.heuristicaSeleccionada, this.profunditatMaxima);
+                return new Move(origen, desti, 0, 0, SearchType.MINIMAX);
 
-        // Minmax Zobrist
-        // Pendiente:
-        // Implementarlo en max.
-        // Hacer tabla con millormoviment, profundidad y heu.
-        // No calcular de 0 cada estado, usar el anterior
-        /*try {
-            millorMoviment = MinmaxIDSZobrist.start(s, 1);
-            origen = millorMoviment.getKey();
-            desti = millorMoviment.getValue();
-        } catch (InterruptedException ignored) {}*/
+            // Minmax IDS
+            case MINMAX_IDS:
+                try {
+                    millorMoviment = MinmaxIDS.start(this.s, this.heuristicaSeleccionada, this.profunditatInicial);
+                    origen = millorMoviment.getKey();
+                    desti = millorMoviment.getValue();
+                } catch (InterruptedException ignored) {}
+                return new Move(origen, desti, 0, 0, SearchType.MINIMAX_IDS);
 
-        return new Move(origen, desti, 0, 0, SearchType.MINIMAX_IDS);
+            // Minmax Zobrist
+            case MINMAX_ZOBRIST:
+                try {
+                    millorMoviment = MinmaxIDSZobrist.start(this.s, this.heuristicaSeleccionada, this.profunditatInicial);
+                    origen = millorMoviment.getKey();
+                    desti = millorMoviment.getValue();
+                } catch (InterruptedException ignored) {}
+                return new Move(origen, desti, 0, 0, SearchType.MINIMAX_IDS);
+        }
+
+        return new Move(origen, desti, 0, 0, SearchType.RANDOM);
     }
 
     @Override
     public void timeout() {
-        MinmaxIDS.timeout();
-        //MinmaxIDSZobrist.timeout();
+        switch (this.minmaxSeleccionat) {
+            case MINMAX_IDS -> MinmaxIDS.timeout();
+            case MINMAX_ZOBRIST -> MinmaxIDSZobrist.timeout();
+        }
     }
 
     @Override

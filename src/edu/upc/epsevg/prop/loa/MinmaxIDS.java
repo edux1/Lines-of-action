@@ -7,11 +7,11 @@ public class MinmaxIDS {
 
     private static volatile boolean timeout;
 
-    public static Map.Entry<Point, Point> start(ElMeuStatus estat, int profunditatInicial) throws InterruptedException {
+    public static Map.Entry<Point, Point> start(ElMeuStatus estat, HeuristicaEnum heuristicaSeleccionada, int profunditatInicial) throws InterruptedException {
         Map.Entry<Point, Point> moviment;
         timeout = false;
 
-        MinmaxIDSRunnable ids = new MinmaxIDSRunnable(estat,profunditatInicial);
+        MinmaxIDSRunnable ids = new MinmaxIDSRunnable(estat, heuristicaSeleccionada, profunditatInicial);
         Thread thread = new Thread(ids);
         thread.start();
 
@@ -37,11 +37,13 @@ class MinmaxIDSRunnable implements Runnable {
     private final ElMeuStatus estat;
     private volatile Map.Entry<Point, Point> moviment;
     private int profunditat;
+    private static HeuristicaEnum heuristicaSeleccionada;
 
-    public MinmaxIDSRunnable(ElMeuStatus estat, int profunditat) {
+    public MinmaxIDSRunnable(ElMeuStatus estat, HeuristicaEnum heuristica, int profunditat) {
         this.estat = estat;
         this.profunditat = profunditat;
         this.moviment = null;
+        heuristicaSeleccionada = heuristica;
     }
 
     @Override
@@ -84,10 +86,10 @@ class MinmaxIDSRunnable implements Runnable {
 
 
 
-    public static int maxvalor(ElMeuStatus estat, int profunditat, int alfa , int beta, CellType jugador) {
+    public static int maxvalor(ElMeuStatus estat, int profunditat, int alfa, int beta, CellType jugador) {
         // No podemos seguir o llegado a la hoja
         if (estat.checkGameOver() || profunditat == 0) {
-            return Heuristica.calcula(estat, jugador);
+            return Heuristica.calcula(heuristicaSeleccionada, estat, jugador);
         }
 
         int valor = Integer.MIN_VALUE;
@@ -115,10 +117,10 @@ class MinmaxIDSRunnable implements Runnable {
     }
 
 
-    public static int minvalor(ElMeuStatus estat, int profunditat, int alfa , int beta, CellType jugador) {
+    public static int minvalor(ElMeuStatus estat, int profunditat, int alfa, int beta, CellType jugador) {
         // No podemos seguir o llegado a la hoja
         if (estat.checkGameOver() || profunditat == 0) {
-            return Heuristica.calcula(estat, jugador);
+            return Heuristica.calcula(heuristicaSeleccionada, estat, jugador);
         }
 
         int valor = Integer.MAX_VALUE;

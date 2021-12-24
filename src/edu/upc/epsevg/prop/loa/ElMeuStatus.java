@@ -19,15 +19,12 @@ public class ElMeuStatus extends GameStatus {
         super(tauler);
     }
 
-    // Constructor por copia
-    public ElMeuStatus(ElMeuStatus estat) {
-        super(estat);
-        this.hash = estat.hash;
-        this.zobristTable = estat.zobristTable;
-        this.transpositionHashtable = estat.transpositionHashtable;
+    // Constructor pare de GameStatus
+    public ElMeuStatus(GameStatus gameStatus) {
+        super(gameStatus);
     }
 
-    // Constructor per al override de GameStatus amb Zobrist Hashing
+    // Constructor pare de GameStatus mes implementacio amb Zobrist Hashing
     public ElMeuStatus(GameStatus gs, int[][][] zobristTable) {
         super(gs);
         this.zobristTable = zobristTable;
@@ -36,6 +33,14 @@ public class ElMeuStatus extends GameStatus {
         calcula_hash();
 
         System.out.println("Este estado tiene hash: " + hash);
+    }
+
+    // Constructor por copia
+    public ElMeuStatus(ElMeuStatus estat) {
+        super(estat);
+        this.hash = estat.hash;
+        this.zobristTable = estat.zobristTable;
+        this.transpositionHashtable = estat.transpositionHashtable;
     }
 
     public ElMeuStatus(int[][] ints, long hash, int[][][] zobristTable, Hashtable<Long, Transposition> transpositionHashtable) {

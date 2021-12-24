@@ -6,7 +6,10 @@ import java.util.Map.Entry;
 
 public class Minmax_AlfaBeta {
 
-    public static Entry<Point, Point> Tria_Moviment(ElMeuStatus estat, int profunditat) {
+    private static HeuristicaEnum heuristicaSeleccionada;
+
+    public static Entry<Point, Point> Tria_Moviment(ElMeuStatus estat, HeuristicaEnum heuristica, int profunditat) {
+        heuristicaSeleccionada = heuristica;
         int valor = Integer.MIN_VALUE;
         Entry<Point, Point> millorMoviment = Map.entry(new Point(),new Point());
         
@@ -41,7 +44,7 @@ public class Minmax_AlfaBeta {
     public static int maxvalor(ElMeuStatus estat, int profunditat, int alfa , int beta, CellType jugador) {
         // No podemos seguir o llegado a la hoja
         if (estat.checkGameOver() || profunditat == 0) {
-            return Heuristica.calcula(estat, jugador);
+            return Heuristica.calcula(heuristicaSeleccionada, estat, jugador);
         }
 
         int valor = Integer.MIN_VALUE;
@@ -72,7 +75,7 @@ public class Minmax_AlfaBeta {
     public static int minvalor(ElMeuStatus estat, int profunditat, int alfa , int beta, CellType jugador) {
         // No podemos seguir o llegado a la hoja
         if (estat.checkGameOver() || profunditat == 0) {
-            return Heuristica.calcula(estat, jugador);
+            return Heuristica.calcula(heuristicaSeleccionada, estat, jugador);
         }
 
         int valor = Integer.MAX_VALUE;

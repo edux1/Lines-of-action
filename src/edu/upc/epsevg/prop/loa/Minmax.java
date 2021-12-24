@@ -5,9 +5,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class Minmax {
+
+    private static HeuristicaEnum heuristicaSeleccionada;
     
-    
-    public static Entry<Point, Point> Tria_Moviment(ElMeuStatus estat, int profunditat) {
+    public static Entry<Point, Point> Tria_Moviment(ElMeuStatus estat, HeuristicaEnum heuristica, int profunditat) {
+        heuristicaSeleccionada = heuristica;
         int valor = Integer.MIN_VALUE;
         Entry<Point, Point> millorMoviment = Map.entry(new Point(),new Point());
 
@@ -39,7 +41,7 @@ public class Minmax {
     public static int maxvalor(ElMeuStatus estat, int profunditat, CellType jugador) {
         // No podemos seguir o llegado a la hoja
         if (estat.checkGameOver() || profunditat == 0) {
-            return Heuristica.calcula(estat, CellType.opposite(jugador)) ;
+            return Heuristica.calcula(heuristicaSeleccionada, estat, CellType.opposite(jugador)) ;
         }
 
         int valor = Integer.MIN_VALUE;
@@ -64,7 +66,7 @@ public class Minmax {
     public static int minvalor(ElMeuStatus estat, int profunditat, CellType jugador) {
         // No podemos seguir o llegado a la hoja
         if (estat.checkGameOver() || profunditat == 0) {
-            return Heuristica.calcula(estat, CellType.opposite(jugador));
+            return Heuristica.calcula(heuristicaSeleccionada, estat, CellType.opposite(jugador));
         }
 
         int valor = Integer.MAX_VALUE;

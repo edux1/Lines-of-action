@@ -37,7 +37,7 @@ public class GameStatusTest {
         System.out.println(gs.toString());
 
         // Imprime heuristica
-        System.out.println("Heuristica blancas: " + Heuristica.calcula(gs, CellType.PLAYER1));
+        System.out.println("Heuristica blancas: " + Heuristica.calcula(HeuristicaEnum.HEURISTICA_1, gs, CellType.PLAYER1));
 
         System.out.println("=========================================================");
 

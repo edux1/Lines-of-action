@@ -19,9 +19,9 @@ public class Game {
             @Override
             public void run() {
                 
-//                IPlayer player1 = new RandomPlayer("Random alejandro");
-//                IPlayer player1 = new BuckyPlayer(4);
-                IPlayer player1 = new temate_otrave("Temate Otrave", 4);
+                // IPlayer player1 = new RandomPlayer("Random alejandro");
+                // IPlayer player1 = new BuckyPlayer(4);
+                IPlayer player1 = new temate_otrave("Temate Otrave", 6, 2, HeuristicaEnum.HEURISTICA_1, MinmaxEnum.MINMAX_IDS);
                 IPlayer player2 = new MCCloudPlayer();
 
                 new Board(player1 , player2, 6, Level.DIFFICULT);
