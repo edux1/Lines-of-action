@@ -128,25 +128,6 @@ public class Heuristica {
         return score;
     }
     
-    /*public static int heuristica_3(ElMeuStatus s, CellType jugador) {
-        //int grup_max = 1;
-        ArrayList<ArrayList<Point>> groups;
-        ArrayList<Point> fitxes = new ArrayList<>();
-        ArrayList<Point> group;
-        int score;
-        
-        for (int i = 0 ; i < s.getNumberOfPiecesPerColor(jugador) ; i++) {
-            fitxes.add(s.getPiece(jugador, i));
-        }
-
-        score = search_best_group(fitxes);
-        group = get_best_group(fitxes);
-        score += fitxes_restants(fitxes, group);
-        
-        // Retornem el valor de l'heuristica
-        return score;
-    }*/
-    
     public static int heuristica_3(ElMeuStatus s, CellType jugador) {
         int score = 0;
         ArrayList<Point> fitxes = new ArrayList<>();
@@ -155,7 +136,6 @@ public class Heuristica {
         }
         score += center_distances(fitxes);
         score += puntua_veines(fitxes);
-        //score += fitxes_restants(fitxes);
         return score;
     }
     
@@ -168,7 +148,6 @@ public class Heuristica {
         Point p = get_center_of_mass(fitxes);
         score += distances_from_center(p, fitxes);
         score += puntua_veines(fitxes);
-        //score += fitxes_restants(fitxes);
         return score;
     }
     
@@ -292,43 +271,5 @@ public class Heuristica {
         }
         return grups;
     }
-    
-    private static int bloquejades(ElMeuStatus s, ArrayList<Point> fitxes) {
-        int score = 0;
-        for(Point p: fitxes) {
-            if( (s.getMoves(p)).isEmpty() )
-                score -= 15;
-        }
-        return score;
-    }
-    
-    private static int fitxes_restants(ArrayList<Point> fitxes, ArrayList<Point> group) {
-        int score = 0;
-        for(Point p: group) {
-            if(!fitxes.contains(p))
-                score = -10;
-        }
-        return score;
-    }
-    
-    private static ArrayList<Point> get_best_group(ArrayList<Point> fitxes) {
-        ArrayList<Boolean> visitades = new ArrayList<>();
-        ArrayList<Point> group = new ArrayList<>();
-        for (int i = 0; i < fitxes.size(); i++) {
-            visitades.add(false);
-        }
-        int grup_max = 1;
-        for (int i = 0; i < fitxes.size(); i++) {
-            if(!visitades.get(i)) {
-                grup_max = Math.max(grup_max, suma_veines(i, fitxes, visitades));
-                group.add(fitxes.get(i));
-            }
 
-            if(grup_max >= (fitxes.size() - i))
-                break;
-
-            visitades.set(i,true);
-        }
-        return group;
-    }
 }
