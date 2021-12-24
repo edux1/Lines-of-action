@@ -10,11 +10,12 @@ public class Minmax_AlfaBeta {
     private static int nodes_explorats;
     private static int nodes_explorats_total;
 
-    public static Entry<Point, Point> Tria_Moviment(ElMeuStatus estat, HeuristicaEnum heuristica, int profunditat) {
+    public static CustomInfo Tria_Moviment(ElMeuStatus estat, HeuristicaEnum heuristica, int profunditat) {
         heuristicaSeleccionada = heuristica;
         int valor = Integer.MIN_VALUE;
         
         //Incrementem els nodes explorats
+        nodes_explorats = 0;
         nodes_explorats++;
         
         Entry<Point, Point> millorMoviment = Map.entry(new Point(),new Point());
@@ -32,7 +33,7 @@ public class Minmax_AlfaBeta {
                 
                 //Caso ganador
                 if (aux.isGameOver() && aux.GetWinner() == jugador)
-                    return Map.entry(posAct, pos);
+                    return new CustomInfo(millorMoviment, profunditat, nodes_explorats, nodes_explorats_total);
                 else if(!aux.isGameOver()) {
                     int min = minvalor(aux, profunditat-1, alfa, beta, jugador);
                     if (min >= valor) {
@@ -43,10 +44,10 @@ public class Minmax_AlfaBeta {
             }
         }
         nodes_explorats_total += nodes_explorats;
+        System.out.println("\n========== Profunditat " + profunditat + " ==========");
         System.out.println("Nodes explorats: " + nodes_explorats);
         System.out.println("Nodes explorats totals: " + nodes_explorats_total);
-        nodes_explorats = 0;
-        return millorMoviment;
+        return new CustomInfo(millorMoviment, profunditat, nodes_explorats, nodes_explorats_total);
     }
     
 

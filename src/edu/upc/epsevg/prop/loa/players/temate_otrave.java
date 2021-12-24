@@ -38,6 +38,7 @@ public class temate_otrave implements IPlayer, IAuto {
         else
             this.s = new ElMeuStatus(gameStatus);
 
+        CustomInfo info = new CustomInfo();
         Map.Entry<Point, Point> millorMoviment;
         Point origen = new Point();
         Point desti = new Point();
@@ -46,37 +47,37 @@ public class temate_otrave implements IPlayer, IAuto {
 
             // Minmax basic
             case MINMAX:
-                millorMoviment = Minmax.Tria_Moviment(this.s, this.heuristicaSeleccionada, this.profunditatMaxima);
-                origen = millorMoviment.getKey();
-                desti = millorMoviment.getValue();
-                return new Move(origen, desti, 0, 0, SearchType.MINIMAX);
+                info = Minmax.Tria_Moviment(this.s, this.heuristicaSeleccionada, this.profunditatMaxima);
+                origen = info.getMillorMoviment().getKey();
+                desti = info.getMillorMoviment().getValue();
+                return new Move(origen, desti, info.getNodes_explorats(), this.profunditatMaxima, SearchType.MINIMAX);
 
             // Minmax Poda Alfa Beta
             case MINMAX_ALFABETA:
-                millorMoviment = Minmax_AlfaBeta.Tria_Moviment(this.s, this.heuristicaSeleccionada, this.profunditatMaxima);
-                origen = millorMoviment.getKey();
-                desti = millorMoviment.getValue();
-                return new Move(origen, desti, 0, 0, SearchType.MINIMAX);
-
+                info = Minmax_AlfaBeta.Tria_Moviment(this.s, this.heuristicaSeleccionada, this.profunditatMaxima);
+                origen = info.getMillorMoviment().getKey();
+                desti = info.getMillorMoviment().getValue();
+                return new Move(origen, desti, info.getNodes_explorats(), this.profunditatMaxima, SearchType.MINIMAX);
             // Minmax IDS
             case MINMAX_IDS:
                 try {
-                    millorMoviment = MinmaxIDS.start(this.s, this.heuristicaSeleccionada, this.profunditatInicial);
-                    origen = millorMoviment.getKey();
-                    desti = millorMoviment.getValue();
+                    info = MinmaxIDS.start(this.s, this.heuristicaSeleccionada, this.profunditatInicial);
+                    origen = info.getMillorMoviment().getKey();
+                    desti = info.getMillorMoviment().getValue();
                 } catch (InterruptedException ignored) {}
-                return new Move(origen, desti, 0, 0, SearchType.MINIMAX_IDS);
+                return new Move(origen, desti, info.getNodes_explorats(), info.getProfunditat(), SearchType.MINIMAX_IDS);
 
             // Minmax Zobrist
             case MINMAX_ZOBRIST:
                 try {
-                    millorMoviment = MinmaxIDSZobrist.start(this.s, this.heuristicaSeleccionada, this.profunditatInicial);
-                    origen = millorMoviment.getKey();
-                    desti = millorMoviment.getValue();
+                    info = MinmaxIDSZobrist.start(this.s, this.heuristicaSeleccionada, this.profunditatInicial);
+                    origen = info.getMillorMoviment().getKey();
+                    desti = info.getMillorMoviment().getValue();
                 } catch (InterruptedException ignored) {}
-                return new Move(origen, desti, 0, 0, SearchType.MINIMAX_IDS);
+                return new Move(origen, desti, info.getNodes_explorats(), info.getProfunditat(), SearchType.MINIMAX_IDS);
         }
 
+        System.out.println("No deberias estar aqui");
         return new Move(origen, desti, 0, 0, SearchType.RANDOM);
     }
 

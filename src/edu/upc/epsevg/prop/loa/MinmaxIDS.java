@@ -7,8 +7,7 @@ public class MinmaxIDS {
 
     private static volatile boolean timeout;
 
-    public static Map.Entry<Point, Point> start(ElMeuStatus estat, HeuristicaEnum heuristicaSeleccionada, int profunditatInicial) throws InterruptedException {
-        Map.Entry<Point, Point> moviment;
+    public static CustomInfo start(ElMeuStatus estat, HeuristicaEnum heuristicaSeleccionada, int profunditatInicial) throws InterruptedException {
         timeout = false;
 
         MinmaxIDSRunnable ids = new MinmaxIDSRunnable(estat, heuristicaSeleccionada, profunditatInicial);
@@ -20,10 +19,10 @@ public class MinmaxIDS {
             Thread.onSpinWait();
         }
 
-        moviment = ids.getMoviment();
+        CustomInfo info = ids.getInfo();
         thread.stop();
 
-        return moviment;
+        return info;
     }
 
     public static void timeout() {
@@ -36,8 +35,10 @@ class MinmaxIDSRunnable implements Runnable {
 
     private final ElMeuStatus estat;
     private volatile Map.Entry<Point, Point> moviment;
-    private int profunditat;
     private static HeuristicaEnum heuristicaSeleccionada;
+    private int profunditat;
+    private static int nodes_explorats;
+    private static int nodes_explorats_total;
 
     public MinmaxIDSRunnable(ElMeuStatus estat, HeuristicaEnum heuristica, int profunditat) {
         this.estat = estat;
@@ -57,6 +58,9 @@ class MinmaxIDSRunnable implements Runnable {
     public static Map.Entry<Point, Point> Tria_Moviment(ElMeuStatus estat, int profunditat) {
         int valor = Integer.MIN_VALUE;
         Map.Entry<Point, Point> millorMoviment = Map.entry(new Point(),new Point());
+
+        // Incrementem els nodes explorats
+        nodes_explorats++;
 
         int alfa = Integer.MIN_VALUE;
         int beta = Integer.MAX_VALUE;
@@ -81,12 +85,22 @@ class MinmaxIDSRunnable implements Runnable {
                 }
             }
         }
+
+        nodes_explorats_total += nodes_explorats;
+        System.out.println("\n========== Profunditat " + profunditat + " ==========");
+        System.out.println("Nodes explorats: " + nodes_explorats);
+        System.out.println("Nodes explorats totals: " + nodes_explorats_total);
+        nodes_explorats = 0;
+
         return millorMoviment;
     }
 
 
 
     public static int maxvalor(ElMeuStatus estat, int profunditat, int alfa, int beta, CellType jugador) {
+        // Incrementem els nodes explorats
+        nodes_explorats++;
+
         // No podemos seguir o llegado a la hoja
         if (estat.checkGameOver() || profunditat == 0) {
             return Heuristica.calcula(heuristicaSeleccionada, estat, jugador);
@@ -118,6 +132,9 @@ class MinmaxIDSRunnable implements Runnable {
 
 
     public static int minvalor(ElMeuStatus estat, int profunditat, int alfa, int beta, CellType jugador) {
+        // Incrementem els nodes explorats
+        nodes_explorats++;
+
         // No podemos seguir o llegado a la hoja
         if (estat.checkGameOver() || profunditat == 0) {
             return Heuristica.calcula(heuristicaSeleccionada, estat, jugador);
@@ -147,7 +164,7 @@ class MinmaxIDSRunnable implements Runnable {
         return valor;
     }
 
-    public Map.Entry<Point, Point> getMoviment() {
-        return moviment;
+    public CustomInfo getInfo() {
+        return new CustomInfo(moviment, profunditat - 1, nodes_explorats, nodes_explorats_total);
     }
 }
