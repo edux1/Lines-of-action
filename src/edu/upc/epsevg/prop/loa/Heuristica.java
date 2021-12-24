@@ -32,13 +32,13 @@ public class Heuristica {
     };
     
     public static int calcula(HeuristicaEnum heuristicaSeleccionada, ElMeuStatus estat, CellType jugador) {
-        return switch (heuristicaSeleccionada) {
-            case HEURISTICA_1 -> heuristica_1(estat, jugador) - heuristica_1(estat, CellType.opposite(jugador));
-            case HEURISTICA_2 -> heuristica_2(estat, jugador) - heuristica_2(estat, CellType.opposite(jugador));
-            case HEURISTICA_3 -> heuristica_3(estat, jugador) - heuristica_3(estat, CellType.opposite(jugador));
-            case HEURISTICA_4 -> heuristica_4(estat, jugador) - heuristica_4(estat, CellType.opposite(jugador));
-            default -> 0;
+        switch (heuristicaSeleccionada) {
+            case HEURISTICA_1: return heuristica_1(estat, jugador) - heuristica_1(estat, CellType.opposite(jugador));
+            case HEURISTICA_2: return heuristica_2(estat, jugador) - heuristica_2(estat, CellType.opposite(jugador));
+            case HEURISTICA_3: return heuristica_3(estat, jugador) - heuristica_3(estat, CellType.opposite(jugador));
+            case HEURISTICA_4: return heuristica_4(estat, jugador) - heuristica_4(estat, CellType.opposite(jugador));
         };
+        return 0;
     }
 
     

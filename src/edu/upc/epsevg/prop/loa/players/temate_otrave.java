@@ -79,8 +79,12 @@ public class temate_otrave implements IPlayer, IAuto {
     @Override
     public void timeout() {
         switch (this.minmaxSeleccionat) {
-            case MINMAX_IDS -> MinmaxIDS.timeout();
-            case MINMAX_ZOBRIST -> MinmaxIDSZobrist.timeout();
+            case MINMAX_IDS:
+                MinmaxIDS.timeout();
+                break;
+            case MINMAX_ZOBRIST:
+                MinmaxIDSZobrist.timeout();
+                break;
         }
     }
 
