@@ -31,6 +31,13 @@ public class Heuristica {
             {-50,-30,-30,-30,-30,-30,-30,-50}
     };
     
+    /**
+     * Retorna el valor de l'estat del tauler, el valor es fa respecte l'heuristica que es rep per parametre i el jugador seleccionat.
+     * @param heuristicaSeleccionada Heuristica que s'utilitzará per evaluar.
+     * @param estat Tauler a evaluar.
+     * @param jugador Jugador que s'evaluará.
+     * @return El valor de l'estat del tauler.
+     */
     public static int calcula(HeuristicaEnum heuristicaSeleccionada, ElMeuStatus estat, CellType jugador) {
         switch (heuristicaSeleccionada) {
             case HEURISTICA_1: return heuristica_1(estat, jugador) - heuristica_1(estat, CellType.opposite(jugador));
@@ -41,54 +48,69 @@ public class Heuristica {
         return 0;
     }
 
-    
+    /**
+     * Retorna el valor de l'estat del tauler respecte a un jugador, sense tenir en compte les fitxes del rival, dona preferencia a les fitxes al centre del tauler i prioritzar fer grups grans.
+     * @param s Tauler a evaluar.
+     * @param jugador Jugador que s'evaluará.
+     * @return El valor de l'estat del tauler, sense tenir en compte les fitxes del rival.
+     */
     public static int heuristica_1(ElMeuStatus s, CellType jugador) {
-        int grup_max = 1;
-
+        int grup_max;
+        
+        // Guardem totes les fitxes de jugador a un array.
         ArrayList<Point> fitxes = new ArrayList<>();
-
         for (int i = 0 ; i < s.getNumberOfPiecesPerColor(jugador) ; i++) {
             fitxes.add(s.getPiece(jugador, i));
         }
-
+        // Evaluem el tauler segons el seu millor grup.
         grup_max = search_best_group(fitxes);
         
-        // Retornem el valor de l'heuristica
+        // Dividim el valor entre el número de fitxes vives, ja que no es lo mateix tenir un grup de 6 fitxes
+        // quan tens 12 fitxes, que un grup de 6 fitxes quan tens 8 fitxes. Fem això per equilibrar els resultats.
         return (int) ( ( (float) grup_max / s.getNumberOfPiecesPerColor(jugador)) * 12);
     }
 
+    /**
+     * Retorna el valor del tauler fent una búsqueda del millor grup i evaluant-lo.
+     * @param fitxes Conjunt de fitxes d'un mateix jugador.
+     * @return El valor del millor grup format per un jugador.
+     */
     private static int search_best_group(ArrayList<Point> fitxes) {
+        // Creem un array on guardarem quines fitxes hem visitat.
         ArrayList<Boolean> visitades = new ArrayList<>();
         for (int i = 0; i < fitxes.size(); i++) {
             visitades.add(false);
         }
         int grup_max = 1;
         for (int i = 0; i < fitxes.size(); i++) {
+            // Si la fitxa no ha estat visitada, mirem quin grup forma, en cas de que el seu grup
+            // tingui millor valor que l'anterior millor grup trobat, guardem el seu resultat.
             if(!visitades.get(i)) {
                 grup_max = Math.max(grup_max, suma_veines(i, fitxes, visitades));
             }
+            //Marquem la fitxa de la posició i com a visitada.
             visitades.set(i,true);
         }
         return grup_max;
     }
     
-    public static int heuristica_centre(ElMeuStatus s, CellType jugador) {
-        int score = 1;
-
-        for (int i = 1 ; i < s.getNumberOfPiecesPerColor(jugador) ; i++) {
-            Point p = s.getPiece(jugador, i);
-            score += puntuacions[p.x][p.y];
-        }
-
-        return score;
-    }
-    
-    
+    /**
+     * Retorna el valor del grup que forma una fitxa amb les altres fitxes no visitades.
+     * @param posFitxa Posició en l'array de la fitxa que volem comprovar les seves veïnes.
+     * @param fitxes Conjunt de fitxes d'un mateix jugador.
+     * @param visitades Indicador de quines fitxes han estat visitades.
+     * @return El valor de les fitxes que formen un grup.
+     */
     public static int suma_veines(int posFitxa, ArrayList<Point> fitxes, ArrayList<Boolean> visitades) {
         Point p = fitxes.get(posFitxa);
+        // Comprova el valor de la posició de la fitxa i multiplica el seu valor
+        // per el número de fitxes veïnes del mateix jugador.
         int valor = puntuacions[p.x][p.y] * num_veines(posFitxa, fitxes);
-
+        
+        // Mirem si les fitxes no visitades son veïnes de la fitxa. 
         for (int i = posFitxa + 1; i < fitxes.size(); i++) {
+            // En cas de ser veïna, la marquem com a visitades i mirem si aquesta
+            // fitxa té més veïnes i valorem el seu subgrup.
             if ( (esVeina(p,fitxes.get(i))) && (!visitades.get(i)) ) {
                 visitades.set(i,true);
                 valor += suma_veines(posFitxa + 1, fitxes, visitades);
@@ -97,11 +119,17 @@ public class Heuristica {
         return valor;
     }
 
-
+    /**
+     * Retorna el número de fitxes veïnes del mateix jugador.
+     * @param posFitxa Posició en l'array de la fitxa que volem comprovar les seves veïnes.
+     * @param fitxes Conjunt de fitxes d'un mateix jugador.
+     * @return El número de fitxes veïnes del mateix jugador
+     */
     public static int num_veines(int posFitxa, ArrayList<Point> fitxes) {
         Point p = fitxes.get(posFitxa);
         int valor = 1;
-
+        
+        // Comprovem amb quines fitxes es veïna.
         for (int i = 0; i < fitxes.size(); i++) {
             if ( (esVeina(p,fitxes.get(i))) && (fitxes.get(i) != p) ) {
                 valor++;
@@ -110,13 +138,18 @@ public class Heuristica {
         return valor;
     }
 
-    
+    /**
+     * Retorna el valor de l'estat del tauler respecte a un jugador, sense tenir en compte les fitxes del rival, intenta reduir la distancia de les fitxes respecte al grup millor posicionat.
+     * @param s Tauler a evaluar.
+     * @param jugador Jugador que s'evaluará.
+     * @return El valor de l'estat del tauler, sense tenir en compte les fitxes del rival.
+     */
     public static int heuristica_2(ElMeuStatus s, CellType jugador) {
         ArrayList<ArrayList<Point>> groups;
         ArrayList<Point> fitxes = new ArrayList<>();
         ArrayList<Point> group;
         int score;
-        
+        // Guardem totes les fitxes de jugador a un array.
         for (int i = 0 ; i < s.getNumberOfPiecesPerColor(jugador) ; i++) {
             fitxes.add(s.getPiece(jugador, i));
         }
@@ -130,6 +163,7 @@ public class Heuristica {
     
     public static int heuristica_3(ElMeuStatus s, CellType jugador) {
         int score = 0;
+        // Guardem totes les fitxes de jugador a un array.
         ArrayList<Point> fitxes = new ArrayList<>();
         for (int i = 0 ; i < s.getNumberOfPiecesPerColor(jugador) ; i++) {
             fitxes.add(s.getPiece(jugador, i));
@@ -206,6 +240,12 @@ public class Heuristica {
         return score;
     }
     
+    /**
+     * Diu si dues fitxes son veines o no.
+     * @param a Posició d'una fitxa
+     * @param b Posició d'una altra fitxa
+     * @return Diu si les fitxes son veines
+     */
     public static boolean esVeina(Point a, Point b) {
         double x = Math.abs(a.x - b.x);
         double y = Math.abs(a.y - b.y);
@@ -244,13 +284,20 @@ public class Heuristica {
         return score;
     }
     
+    /**
+     * Retorne els grups que ha format un jugador sobre el tauler.
+     * @param s Tauler a evaluar.
+     * @param jugador Jugador a evaluar.
+     * @param fitxes Conjunt de fitxes del jugador.
+     * @return Els diferents grups formats.
+     */
     private static ArrayList<ArrayList<Point>> create_groups(ElMeuStatus s, CellType jugador, ArrayList<Point> fitxes) {
         ArrayList<ArrayList<Point>> grups = new ArrayList<>();
 
         for (int i = 0; i < fitxes.size(); i++) {
             boolean afegida = false;
 
-            // Busca si forma parte de un grupo
+            // Busquem si forma part d'algun grup.
             for (ArrayList<Point> grup : grups) {
                 for (Point p : grup) {
                     if (esVeina(fitxes.get(i), p)) {
@@ -262,7 +309,7 @@ public class Heuristica {
                 if (afegida) break;
             }
 
-            // Si no hay grupo creamos uno
+            // Si no hi ha grup, creem un.
             if (!afegida) {
                 ArrayList<Point> g = new ArrayList<>();
                 g.add(fitxes.get(i));
