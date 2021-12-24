@@ -60,12 +60,8 @@ public class Heuristica {
         int grup_max = 1;
         for (int i = 0; i < fitxes.size(); i++) {
             if(!visitades.get(i)) {
-                grup_max = suma_veines(i, fitxes, visitades);
+                grup_max = Math.max(grup_max, suma_veines(i, fitxes, visitades));
             }
-
-            if(grup_max >= (fitxes.size() - i))
-                break;
-
             visitades.set(i,true);
         }
         return grup_max;

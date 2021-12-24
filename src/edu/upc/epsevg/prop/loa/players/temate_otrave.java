@@ -37,30 +37,30 @@ public class temate_otrave implements IPlayer, IAuto {
         // Map.Entry<Point, Point> millorMoviment = minimax_AlfaBeta.Tria_Moviment;
 
         // Minmax IDS
-        //try {
-        //    millorMoviment = MinmaxIDS.start(s, 2);
-        //    origen = millorMoviment.getKey();
-        //    desti = millorMoviment.getValue();
-        //} catch (InterruptedException ignored) {}
+        try {
+            millorMoviment = MinmaxIDS.start(s, 2);
+            origen = millorMoviment.getKey();
+            desti = millorMoviment.getValue();
+        } catch (InterruptedException ignored) {}
 
         // Minmax Zobrist
         // Pendiente:
         // Implementarlo en max.
         // Hacer tabla con millormoviment, profundidad y heu.
         // No calcular de 0 cada estado, usar el anterior
-        try {
+        /*try {
             millorMoviment = MinmaxIDSZobrist.start(s, 1);
             origen = millorMoviment.getKey();
             desti = millorMoviment.getValue();
-        } catch (InterruptedException ignored) {}
+        } catch (InterruptedException ignored) {}*/
 
         return new Move(origen, desti, 0, 0, SearchType.MINIMAX_IDS);
     }
 
     @Override
     public void timeout() {
-//        MinmaxIDS.timeout();
-        MinmaxIDSZobrist.timeout();
+        MinmaxIDS.timeout();
+        //MinmaxIDSZobrist.timeout();
     }
 
     @Override
