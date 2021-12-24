@@ -86,10 +86,9 @@ class MinmaxIDSZobristRunnable implements Runnable {
             }
         }
 
-        estat.put_transposicio(millorMoviment, valor, profunditat);
+        estat.put_transposicio(millorMoviment, profunditat, valor);
         return millorMoviment;
     }
-
 
 
     public static int maxvalor(ElMeuStatus estat, int profunditat, int alfa , int beta, CellType jugador) {
@@ -99,7 +98,7 @@ class MinmaxIDSZobristRunnable implements Runnable {
             return heu;
         }
 
-        System.out.println(estat);
+        //System.out.println(estat);
 
         int valor = Integer.MIN_VALUE;
 
@@ -107,9 +106,11 @@ class MinmaxIDSZobristRunnable implements Runnable {
             int millorInici = i;
 
             // Zobrist per comencar per la millor posicio
-            Point millorFitxa = estat.get_transposicio().getMillorMoviment().getKey();
-            if (millorFitxa != null)
+            Transposition t = estat.get_transposicio(profunditat);
+            if (t != null) {
+                Point millorFitxa = t.getMillorMoviment().getKey();
                 millorInici = (i + estat.findPiece( millorFitxa , estat.getCurrentPlayer())) % estat.getNumberOfPiecesPerColor(estat.getCurrentPlayer());
+            }
 
             Point posAct = estat.getPiece(estat.getCurrentPlayer(), millorInici);
             for (Point pos : estat.getMoves(posAct)) {
