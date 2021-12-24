@@ -10,6 +10,13 @@ public class Minmax_AlfaBeta {
     private static int nodes_explorats;
     private static int nodes_explorats_total;
 
+    /**
+     * Mètode principal que gestiona el minmax que retorna la millor jugada per al jugador indicat.
+     * @param estat Estat actual de la partida
+     * @param heuristica Heurística que s'utilitzará per avaluar el tauler.
+     * @param profunditat Profunditat màxima que volem explorar
+     * @return La posició de la fitxa ha moure, i la posició destí de la fitxa.
+     */
     public static CustomInfo Tria_Moviment(ElMeuStatus estat, HeuristicaEnum heuristica, int profunditat) {
         heuristicaSeleccionada = heuristica;
         int valor = Integer.MIN_VALUE;
@@ -51,7 +58,15 @@ public class Minmax_AlfaBeta {
     }
     
 
-    
+    /**
+     * Retorna la millor jugada d'un jugador.
+     * @param estat Estat de la partida.
+     * @param profunditat Profunditat que queda per explorar.
+     * @param alfa Màxim vigent exigible al node pare.
+     * @param beta Minim vigent exigible al node pare.
+     * @param jugador Jugador a evaluar.
+     * @return La posició de la fitxa ha moure, i la posició destí de la fitxa.
+     */
     public static int maxvalor(ElMeuStatus estat, int profunditat, int alfa , int beta, CellType jugador) {
         //Incrementem els nodes explorats
         nodes_explorats++;
@@ -85,7 +100,15 @@ public class Minmax_AlfaBeta {
         return valor;
     }
 
-
+    /**
+     * Simula la millor jugada del rival, retorna la millor jugada del jugador.
+     * @param estat Estat de la partida.
+     * @param profunditat Profunditat que queda per explorar.
+     * @param alfa Màxim vigent exigible al node pare.
+     * @param beta Minim vigent exigible al node pare.
+     * @param jugador Jugador a evaluar.
+     * @return La posició de la fitxa ha moure, i la posició destí de la fitxa.
+     */
     public static int minvalor(ElMeuStatus estat, int profunditat, int alfa , int beta, CellType jugador) {
         //Incrementem els nodes explorats
         nodes_explorats++;
