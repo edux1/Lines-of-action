@@ -32,8 +32,9 @@ public class Heuristica {
     };
     
     public static int calcula(ElMeuStatus estat, CellType jugador) {
-        return heuristica_1(estat, jugador) - heuristica_1(estat, CellType.opposite(jugador));
-        //return uristica(estat, jugador) - uristica(estat, CellType.opposite(jugador));
+        //return heuristica_1(estat, jugador) - heuristica_1(estat, CellType.opposite(jugador));
+        //return heuristica_2(estat, jugador) - heuristica_2(estat, CellType.opposite(jugador));
+        return heuristica_3(estat, jugador) - heuristica_3(estat, CellType.opposite(jugador));
     }
 
     
@@ -89,27 +90,24 @@ public class Heuristica {
                 valor += suma_veines(posFitxa + 1, fitxes, visitades);
             }
         }
-
         return valor;
     }
 
 
     public static int num_veines(int posFitxa, ArrayList<Point> fitxes) {
         Point p = fitxes.get(posFitxa);
-        int valor = 0;
+        int valor = 1;
 
         for (int i = 0; i < fitxes.size(); i++) {
             if ( (esVeina(p,fitxes.get(i))) && (fitxes.get(i) != p) ) {
                 valor++;
             }
         }
-
         return valor;
     }
 
     
     public static int heuristica_2(ElMeuStatus s, CellType jugador) {
-        //int grup_max = 1;
         ArrayList<ArrayList<Point>> groups;
         ArrayList<Point> fitxes = new ArrayList<>();
         ArrayList<Point> group;
@@ -121,16 +119,12 @@ public class Heuristica {
 
         groups = create_groups(s, jugador, fitxes);
         score = distancies(groups, fitxes);
-        //score = search_best_group(fitxes);
-        //group = get_best_group(fitxes);
-        //score += fitxes_restants(fitxes);
-        score += bloquejades(s, fitxes);
 
         // Retornem el valor de l'heuristica
         return score;
     }
     
-    public static int heuristica_3(ElMeuStatus s, CellType jugador) {
+    /*public static int heuristica_3(ElMeuStatus s, CellType jugador) {
         //int grup_max = 1;
         ArrayList<ArrayList<Point>> groups;
         ArrayList<Point> fitxes = new ArrayList<>();
@@ -141,26 +135,34 @@ public class Heuristica {
             fitxes.add(s.getPiece(jugador, i));
         }
 
-        //groups = create_groups(s, jugador, fitxes);
-        //score = distancies(groups, fitxes);
         score = search_best_group(fitxes);
-        //group = get_best_group(fitxes);
-        score += fitxes_restants(fitxes);
-        score += bloquejades(s, fitxes);
+        group = get_best_group(fitxes);
+        score += fitxes_restants(fitxes, group);
         
         // Retornem el valor de l'heuristica
         return score;
-    }
+    }*/
     
-    public static int uristica(ElMeuStatus s, CellType jugador) {
+    public static int heuristica_3(ElMeuStatus s, CellType jugador) {
         int score = 0;
         ArrayList<Point> fitxes = new ArrayList<>();
         for (int i = 0 ; i < s.getNumberOfPiecesPerColor(jugador) ; i++) {
             fitxes.add(s.getPiece(jugador, i));
         }
-        //Point p = get_center_of_mass(fitxes);
-        //score += distances_from_center(p, fitxes);
         score += center_distances(fitxes);
+        score += puntua_veines(fitxes);
+        //score += fitxes_restants(fitxes);
+        return score;
+    }
+    
+    public static int heuristica_4(ElMeuStatus s, CellType jugador) {
+        int score = 0;
+        ArrayList<Point> fitxes = new ArrayList<>();
+        for (int i = 0 ; i < s.getNumberOfPiecesPerColor(jugador) ; i++) {
+            fitxes.add(s.getPiece(jugador, i));
+        }
+        Point p = get_center_of_mass(fitxes);
+        score += distances_from_center(p, fitxes);
         score += puntua_veines(fitxes);
         //score += fitxes_restants(fitxes);
         return score;
@@ -230,13 +232,6 @@ public class Heuristica {
     private static int distance(Point a, Point b) {
         int x =  Math.abs(b.x - a.x);
         int y =  Math.abs(b.y - a.y);
-
-        /*int min =  Math.min(dx, dy);
-        int max =  Math.max(dx, dy);
-
-        int diagonalSteps = min;
-        int straightSteps = max - min;*/
-
         return Math.max(x, y);
     }
 
@@ -260,7 +255,6 @@ public class Heuristica {
                     puntuacio -= min;
                 }
             }
-
             if (puntuacio > score)
                 score = puntuacio;
         }
@@ -304,9 +298,9 @@ public class Heuristica {
         return score;
     }
     
-    private static int fitxes_restants(ArrayList<Point> fitxes) {
+    private static int fitxes_restants(ArrayList<Point> fitxes, ArrayList<Point> group) {
         int score = 0;
-        for(Point p: fitxes) {
+        for(Point p: group) {
             if(!fitxes.contains(p))
                 score = -10;
         }
@@ -322,7 +316,7 @@ public class Heuristica {
         int grup_max = 1;
         for (int i = 0; i < fitxes.size(); i++) {
             if(!visitades.get(i)) {
-                grup_max = suma_veines(i, fitxes, visitades);
+                grup_max = Math.max(grup_max, suma_veines(i, fitxes, visitades));
                 group.add(fitxes.get(i));
             }
 
