@@ -7,10 +7,16 @@ import java.util.Map.Entry;
 public class Minmax_AlfaBeta {
 
     private static HeuristicaEnum heuristicaSeleccionada;
+    private static int nodes_explorats;
+    private static int nodes_explorats_total;
 
     public static Entry<Point, Point> Tria_Moviment(ElMeuStatus estat, HeuristicaEnum heuristica, int profunditat) {
         heuristicaSeleccionada = heuristica;
         int valor = Integer.MIN_VALUE;
+        
+        //Incrementem els nodes explorats
+        nodes_explorats++;
+        
         Entry<Point, Point> millorMoviment = Map.entry(new Point(),new Point());
         
         int alfa = Integer.MIN_VALUE;
@@ -36,12 +42,19 @@ public class Minmax_AlfaBeta {
                 }
             }
         }
+        nodes_explorats_total += nodes_explorats;
+        System.out.println("Nodes explorats: " + nodes_explorats);
+        System.out.println("Nodes explorats totals: " + nodes_explorats_total);
+        nodes_explorats = 0;
         return millorMoviment;
     }
     
 
     
     public static int maxvalor(ElMeuStatus estat, int profunditat, int alfa , int beta, CellType jugador) {
+        //Incrementem els nodes explorats
+        nodes_explorats++;
+        
         // No podemos seguir o llegado a la hoja
         if (estat.checkGameOver() || profunditat == 0) {
             return Heuristica.calcula(heuristicaSeleccionada, estat, jugador);
@@ -73,6 +86,9 @@ public class Minmax_AlfaBeta {
 
 
     public static int minvalor(ElMeuStatus estat, int profunditat, int alfa , int beta, CellType jugador) {
+        //Incrementem els nodes explorats
+        nodes_explorats++;
+        
         // No podemos seguir o llegado a la hoja
         if (estat.checkGameOver() || profunditat == 0) {
             return Heuristica.calcula(heuristicaSeleccionada, estat, jugador);

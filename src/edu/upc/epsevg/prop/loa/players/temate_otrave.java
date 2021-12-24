@@ -47,11 +47,15 @@ public class temate_otrave implements IPlayer, IAuto {
             // Minmax basic
             case MINMAX:
                 millorMoviment = Minmax.Tria_Moviment(this.s, this.heuristicaSeleccionada, this.profunditatMaxima);
+                origen = millorMoviment.getKey();
+                desti = millorMoviment.getValue();
                 return new Move(origen, desti, 0, 0, SearchType.MINIMAX);
 
             // Minmax Poda Alfa Beta
             case MINMAX_ALFABETA:
                 millorMoviment = Minmax_AlfaBeta.Tria_Moviment(this.s, this.heuristicaSeleccionada, this.profunditatMaxima);
+                origen = millorMoviment.getKey();
+                desti = millorMoviment.getValue();
                 return new Move(origen, desti, 0, 0, SearchType.MINIMAX);
 
             // Minmax IDS
