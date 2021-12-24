@@ -4,12 +4,22 @@ import java.awt.*;
 import java.util.Map;
 import java.util.Map.Entry;
 
+/**
+ * Implementa el minmax bàsic, sense millores
+ */
 public class Minmax {
 
     private static HeuristicaEnum heuristicaSeleccionada;
     private static int nodes_explorats;
     private static int nodes_explorats_total;
-    
+
+    /**
+     * Mètode principal que gestiona el minmax que retorna la millor jugada per al jugador indicat
+     * @param estat L'estat actual de la partida
+     * @param heuristica La heuristica que farem servir, de les opcions que tenim
+     * @param profunditat La profunditat màxima que volem explorar
+     * @return Retorna un objecte CustomInfo amb informació sobre el millor moviment, la heuristica, profunditat i nodes explorats
+     */
     public static CustomInfo Tria_Moviment(ElMeuStatus estat, HeuristicaEnum heuristica, int profunditat) {
         heuristicaSeleccionada = heuristica;
         int valor = Integer.MIN_VALUE;
@@ -46,9 +56,15 @@ public class Minmax {
         System.out.println("Nodes explorats totals: " + nodes_explorats_total);
         return new CustomInfo(millorMoviment, profunditat, nodes_explorats, nodes_explorats_total);
     }
-    
 
-    
+
+    /**
+     * Retorna la heuristica màxima de les possibles jugades del nostre tauler
+     * @param estat Estat del tauler de la jugada actual
+     * @param profunditat La profunditat màxima que volem explorar
+     * @param jugador El jugador (Fitxa blanca o negra)
+     * @return La heuristica maximitzadora
+     */
     public static int maxvalor(ElMeuStatus estat, int profunditat, CellType jugador) {
         //Incrementem els nodes explorats
         nodes_explorats++;
@@ -76,7 +92,13 @@ public class Minmax {
         return valor;
     }
 
-
+    /**
+     * Retorna la heuristica minima de les possibles jugades del nostre tauler
+     * @param estat Estat del tauler de la jugada actual
+     * @param profunditat La profunditat màxima que volem explorar
+     * @param jugador El jugador (Fitxa blanca o negra)
+     * @return La heuristica minimitzadora
+     */
     public static int minvalor(ElMeuStatus estat, int profunditat, CellType jugador) {
         //Incrementem els nodes explorats
         nodes_explorats++;
