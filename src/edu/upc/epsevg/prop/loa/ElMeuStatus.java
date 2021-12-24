@@ -76,7 +76,12 @@ public class ElMeuStatus extends GameStatus {
     }
 
     public Transposition get_transposicio(int profunditat) {
-        return this.transpositionHashtable.remove(hash);
+        Transposition t = this.transpositionHashtable.get(hash);
+        if (t.getProfunditat() < profunditat)
+            return t;
+
+
+        return null;
     }
 
     public long getHash() {
