@@ -3,10 +3,21 @@ package edu.upc.epsevg.prop.loa;
 import java.awt.*;
 import java.util.Map;
 
+/**
+ * Implementa el minmax amb millores de IDS i Zobrist
+ */
 public class MinmaxIDSZobrist {
 
     private static volatile boolean timeout;
 
+    /**
+     * Mètode principal que gestiona tota l'implementació del minimax IDS amb timeout
+     * @param estat L'estat actual de la partida
+     * @param heuristicaSeleccionada La heuristica que farem servir, de les opcions que tenim
+     * @param profunditatInicial La profunditat per on volem començar a explorar
+     * @return Retorna un objecte CustomInfo amb informació sobre el millor moviment, la heuristica, profunditat i nodes explorats
+     * @throws InterruptedException
+     */
     public static CustomInfo start(ElMeuStatus estat, HeuristicaEnum heuristicaSeleccionada, int profunditatInicial) throws InterruptedException {
         timeout = false;
 
@@ -31,6 +42,9 @@ public class MinmaxIDSZobrist {
 
 }
 
+/**
+ * Implementa el minmax amb millores de IDS i Zobrist com a Runnable per poder executar-lo en un thread
+ */
 class MinmaxIDSZobristRunnable implements Runnable {
 
     private ElMeuStatus estat;
@@ -40,6 +54,12 @@ class MinmaxIDSZobristRunnable implements Runnable {
     private static int nodes_explorats;
     private static int nodes_explorats_total;
 
+    /**
+     * Constructor principal del minmax Zobrist
+     * @param estat L'estat actual de la partida
+     * @param heuristica La heuristica que farem servir, de les opcions que tenim
+     * @param profunditat La profunditat màxima que volem explorar
+     */
     public MinmaxIDSZobristRunnable(ElMeuStatus estat, HeuristicaEnum heuristica, int profunditat) {
         this.estat = estat;
         this.profunditat = profunditat;
@@ -47,6 +67,9 @@ class MinmaxIDSZobristRunnable implements Runnable {
         heuristicaSeleccionada = heuristica;
     }
 
+    /**
+     * És el bucle principal que executa la lògica del minmax IDS
+     */
     @Override
     public void run() {
         while (true) {
@@ -55,6 +78,13 @@ class MinmaxIDSZobristRunnable implements Runnable {
         }
     }
 
+
+    /**
+     * Mètode principal que gestiona el minmax que retorna la millor jugada per al jugador indicat
+     * @param estat L'estat actual de la partida
+     * @param profunditat La profunditat màxima que volem explorar
+     * @return Retorna un objecte amb informació sobre el millor moviment
+     */
     public static Map.Entry<Point, Point> Tria_Moviment(ElMeuStatus estat, int profunditat) {
         int valor = Integer.MIN_VALUE;
         Map.Entry<Point, Point> millorMoviment = Map.entry(new Point(),new Point());
@@ -101,6 +131,15 @@ class MinmaxIDSZobristRunnable implements Runnable {
     }
 
 
+    /**
+     * Retorna la heuristica màxima de les possibles jugades del nostre tauler
+     * @param estat Estat del tauler de la jugada actual
+     * @param profunditat La profunditat màxima que volem explorar
+     * @param alfa El valor alfa de la poda
+     * @param beta El valor beta de la poda
+     * @param jugador El jugador (Fitxa blanca o negra)
+     * @return
+     */
     public static int maxvalor(ElMeuStatus estat, int profunditat, int alfa , int beta, CellType jugador) {
         // Incrementem els nodes explorats
         nodes_explorats++;
@@ -152,6 +191,15 @@ class MinmaxIDSZobristRunnable implements Runnable {
     }
 
 
+    /**
+     * Retorna la heuristica minima de les possibles jugades del nostre tauler
+     * @param estat Estat del tauler de la jugada actual
+     * @param profunditat La profunditat màxima que volem explorar
+     * @param alfa El valor alfa de la poda
+     * @param beta El valor beta de la poda
+     * @param jugador El jugador (Fitxa blanca o negra)
+     * @return La heuristica minimitzadora
+     */
     public static int minvalor(ElMeuStatus estat, int profunditat, int alfa , int beta, CellType jugador) {
         // Incrementem els nodes explorats
         nodes_explorats++;
@@ -185,6 +233,10 @@ class MinmaxIDSZobristRunnable implements Runnable {
         return valor;
     }
 
+    /**
+     * Mètode per obtenir el resultat del fil que esta executant el minmax i enviar-lo al programa principal
+     * @return Retorna un objecte CustomInfo amb informació sobre el millor moviment, la heuristica, profunditat i nodes explorats
+     */
     public CustomInfo getInfo() {
         return new CustomInfo(moviment, profunditat - 1, nodes_explorats, nodes_explorats_total);
     }
