@@ -49,7 +49,8 @@ public class Heuristica {
     }
 
     /**
-     * Retorna el valor de l'estat del tauler respecte a un jugador, sense tenir en compte les fitxes del rival, dona preferencia a les fitxes al centre del tauler i prioritzar fer grups grans.
+     * Retorna el valor de l'estat del tauler respecte a un jugador, sense tenir en compte les fitxes del rival.
+     * Dona preferencia a les fitxes al centre del tauler i prioritzar fer grups grans.
      * @param s Tauler a evaluar.
      * @param jugador Jugador que s'evaluará.
      * @return El valor de l'estat del tauler, sense tenir en compte les fitxes del rival.
@@ -139,7 +140,8 @@ public class Heuristica {
     }
 
     /**
-     * Retorna el valor de l'estat del tauler respecte a un jugador, sense tenir en compte les fitxes del rival, intenta reduir la distancia de les fitxes respecte al grup millor posicionat.
+     * Retorna el valor de l'estat del tauler respecte a un jugador, sense tenir en compte les fitxes del rival.
+     * Intenta reduir la distancia de les fitxes respecte al grup millor posicionat.
      * @param s Tauler a evaluar.
      * @param jugador Jugador que s'evaluará.
      * @return El valor de l'estat del tauler, sense tenir en compte les fitxes del rival.
@@ -161,6 +163,13 @@ public class Heuristica {
         return score;
     }
     
+    /**
+     * Retorna el valor de l'estat del tauler respecte a un jugador, sense tenir en compte les fitxes del rival. 
+     * Resta punts per la distancie de les fitxes amb el centre i suma punts per les fitxes veïnes.
+     * @param s Tauler a evaluar.
+     * @param jugador Jugador que s'evaluará.
+     * @return El valor de l'estat del tauler, sense tenir en compte les fitxes del rival.
+     */
     public static int heuristica_3(ElMeuStatus s, CellType jugador) {
         int score = 0;
         // Guardem totes les fitxes de jugador a un array.
@@ -173,6 +182,14 @@ public class Heuristica {
         return score;
     }
     
+    /**
+     * Retorna el valor de l'estat del tauler respecte a un jugador, sense tenir en compte les fitxes del rival.
+     * Tria una casella com a centre de masses(que estarà al mig de totes les fitxes) i resta punts per la distancia de cada fitxa amb aquest centre de masses.
+     * Suma punts per les fitxes veines i varia depenent de la forma en que son veines.
+     * @param s Tauler a evaluar.
+     * @param jugador Jugador que s'evaluará.
+     * @return El valor de l'estat del tauler, sense tenir en compte les fitxes del rival.
+     */
     public static int heuristica_4(ElMeuStatus s, CellType jugador) {
         int score = 0;
         ArrayList<Point> fitxes = new ArrayList<>();
@@ -185,6 +202,11 @@ public class Heuristica {
         return score;
     }
     
+    /**
+     * Retorna la casella que está al centre de totes les fitxes.
+     * @param fitxes Conjunt de fitxes d'un jugador.
+     * @return La posició d'una casella.
+     */
     public static Point get_center_of_mass(ArrayList<Point> fitxes) {
         double x = 0, y = 0;
         for(Point p: fitxes) {
@@ -196,6 +218,12 @@ public class Heuristica {
         return new Point((int)x, (int)y);
     }
     
+    /**
+     * Retorna una puntuació segons les distancies que hi han entre les fitxes d'un jugador i un punt.
+     * @param center Coordenades d'una posició.
+     * @param fitxes Conjunt de fitxes d'un jugador.
+     * @return Puntuació de les distancies de les fitxes amb el center.
+     */
     public static int distances_from_center(Point center, ArrayList<Point> fitxes) {
         int score = 0;
         for(Point p: fitxes) {
@@ -204,6 +232,11 @@ public class Heuristica {
         return score;
     }
     
+    /**
+     * Retorna el valor que formen les fitxes mirant si tenen veïnes i de quina forma son veïnes.
+     * @param fitxes Conjunt de fitxes d'un jugador.
+     * @return Valor de les posicions de les fitxes.
+     */
     public static int puntua_veines(ArrayList<Point> fitxes) {
         int score = 0;
         int it = 1;
@@ -216,9 +249,15 @@ public class Heuristica {
         return score;
     }
     
-    //not veina score = 0 pts
-    //veina diagonal = 15 pts
-    //veina not diagonal = 5 pts
+    /**
+     * Retorna el valor de formen les dues fitxes.
+     *  - 15 punts si son veines en diagonal 
+     *  - 5 pts si son veines pero no es en diagonal
+     *  - 0 pts si no son veines.
+     * @param a Posició d'una fitxa.
+     * @param b Posició d'una altra fitxa.
+     * @return Valor que formen les dues fitxes.
+     */
     public static int puntua_veina(Point a, Point b) {
         int score = 0;
         int x = Math.abs(a.x - b.x);
@@ -232,6 +271,11 @@ public class Heuristica {
         return score;
     }
     
+    /**
+     * Retorna el valor de les posicions de les fitxes, com més allunyada estigui una fitxa del centre, més punts resta.
+     * @param fitxes Conjunt de fitxes d'un jugador.
+     * @return El valor de les posicions de les fitxes.
+     */
     public static int center_distances(ArrayList<Point> fitxes) {
         int score = 0;
         for(Point p: fitxes) {
@@ -252,6 +296,13 @@ public class Heuristica {
         return (x <= 1) && (y <= 1);
     }
 
+    /**
+     * Retorna la distancia que hi ha entre dues fitxes. 
+     * Com que el moviment en diagonal es válid, la distancia serà el valor més gran entre les distancies dels eixos X i Y.
+     * @param a Posició d'una fitxa.
+     * @param b Posició d'una altra fitxa.
+     * @return Distancia entre dues fitxes.
+     */
     private static int distance(Point a, Point b) {
         int x =  Math.abs(b.x - a.x);
         int y =  Math.abs(b.y - a.y);
@@ -297,7 +348,7 @@ public class Heuristica {
         for (int i = 0; i < fitxes.size(); i++) {
             boolean afegida = false;
 
-            // Busquem si forma part d'algun grup.
+            // Busquem si forma part d'algun grup, en cas de ser veïna, l'afegim al grup.
             for (ArrayList<Point> grup : grups) {
                 for (Point p : grup) {
                     if (esVeina(fitxes.get(i), p)) {
