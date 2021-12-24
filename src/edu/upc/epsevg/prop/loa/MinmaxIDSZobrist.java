@@ -21,7 +21,7 @@ public class MinmaxIDSZobrist {
         }
 
         result = ids.getBestMove();
-        thread.interrupt();
+        thread.stop();
 
         return result;
     }

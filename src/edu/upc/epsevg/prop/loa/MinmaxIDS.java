@@ -21,7 +21,7 @@ public class MinmaxIDS {
         }
 
         moviment = ids.getMoviment();
-        thread.interrupt();
+        thread.stop();
 
         return moviment;
     }
