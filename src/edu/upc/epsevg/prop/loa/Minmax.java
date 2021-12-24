@@ -30,7 +30,7 @@ public class Minmax {
                 
                 //Caso ganador
                 if(aux.isGameOver() && aux.GetWinner() == jugador)
-                    return new CustomInfo(millorMoviment, profunditat, nodes_explorats, nodes_explorats_total);
+                    return new CustomInfo(Map.entry(posAct, pos), profunditat, nodes_explorats, nodes_explorats_total);
                 else if(!aux.isGameOver()) {
                     int min = minvalor(aux, profunditat-1, jugador);
                     if (min >= valor) {
