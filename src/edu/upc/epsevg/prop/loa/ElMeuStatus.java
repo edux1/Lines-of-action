@@ -6,7 +6,7 @@ import java.util.Map;
 
 /**
  * Benvolguts al Nostre Status! :D
- * @author Eduardo Pinto && Oriol Fernández
+ * @author Eduardo Pinto and Oriol Fernández
  */
 public class ElMeuStatus extends GameStatus {
 

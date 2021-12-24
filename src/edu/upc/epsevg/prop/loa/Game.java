@@ -21,8 +21,7 @@ public class Game {
                 
                 //IPlayer player1 = new RandomPlayer("Random alejandro");
                 //IPlayer player1 = new BuckyPlayer(4);
-                IPlayer player1 = new temate_otrave("Temate Otrave", 6, 2, HeuristicaEnum.HEURISTICA_3, MinmaxEnum.MINMAX_IDS);
-                //IPlayer player2 = new temate_otrave("Temate Otrave", 4, 2, HeuristicaEnum.HEURISTICA_2, MinmaxEnum.MINMAX_ALFABETA);
+                IPlayer player1 = new temate_otrave("Temate Otrave", 6, 2, HeuristicaEnum.HEURISTICA_2, MinmaxEnum.MINMAX_IDS);
                 IPlayer player2 = new MCCloudPlayer();
 
                 new Board(player1 , player2, 10, Level.DIFFICULT);
